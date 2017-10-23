@@ -13,12 +13,26 @@ package engine;
  * @version 0.1
  * @author suppressf0rce
  */
+@SuppressWarnings("WeakerAccess")
 public class GameContainer implements Runnable {
 
-    private final double UPDATE_CAP;
+
     //===>>Variables<<===//
     private Thread gameThread;
+
     private boolean running = false;
+    private final double UPDATE_CAP;
+
+    private int width, height;
+    private float scale;
+    private String title;
+
+    /**
+     * Game window of our game
+     *
+     * @see GameWindow
+     */
+    private GameWindow window;
 
     //===>>Constructor<<===//
 
@@ -27,13 +41,22 @@ public class GameContainer implements Runnable {
      *
      * @param refreshRate the actual refresh rate of the game
      */
-    public GameContainer(int refreshRate) {
+    public GameContainer(int refreshRate, int width, int height, float scale, String title) {
         UPDATE_CAP = 1.0 / refreshRate;
+        this.width = width;
+        this.height = height;
+        this.title = title;
+        this.scale = scale;
     }
 
 
     //===>>Methods<<===//
     public void start() {
+
+        //Initialize our window
+        window = new GameWindow(this);
+
+        //Initialize game thread
         gameThread = new Thread(this);
         gameThread.run();
     }
@@ -90,9 +113,9 @@ public class GameContainer implements Runnable {
 
             //Some game engine optimization
             if (render) {
-
-                frames++;
                 //TODO: Render game
+                frames++;
+                window.update();
 
             } else {
                 try {
@@ -110,5 +133,39 @@ public class GameContainer implements Runnable {
 
     private void dispose() {
 
+    }
+
+
+    //===>>Getters & Setters<<====//
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
