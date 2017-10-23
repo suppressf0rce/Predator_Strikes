@@ -51,8 +51,15 @@ public class GameWindow {
         g = bs.getDrawGraphics();
     }
 
+
+    //===>Methods<<==//
     void update() {
         g.drawImage(image, 0, 0, canvas.getWidth(), canvas.getHeight(), null);
         bs.show();
+    }
+
+    //===>>Getters & Setters<<===//
+    public BufferedImage getImage() {
+        return image;
     }
 }

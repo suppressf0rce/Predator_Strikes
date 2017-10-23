@@ -34,6 +34,13 @@ public class GameContainer implements Runnable {
      */
     private GameWindow window;
 
+    /**
+     * Game renderer
+     *
+     * @see Renderer
+     */
+    private Renderer renderer;
+
     //===>>Constructor<<===//
 
     /**
@@ -55,6 +62,9 @@ public class GameContainer implements Runnable {
 
         //Initialize our window
         window = new GameWindow(this);
+
+        //Initialize game renderer
+        renderer = new Renderer(this);
 
         //Initialize game thread
         gameThread = new Thread(this);
@@ -113,9 +123,10 @@ public class GameContainer implements Runnable {
 
             //Some game engine optimization
             if (render) {
+                renderer.clear();
                 //TODO: Render game
-                frames++;
                 window.update();
+                frames++;
 
             } else {
                 try {
@@ -167,5 +178,9 @@ public class GameContainer implements Runnable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public GameWindow getWindow() {
+        return window;
     }
 }
