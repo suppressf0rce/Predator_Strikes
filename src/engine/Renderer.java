@@ -63,8 +63,43 @@ public class Renderer {
     }
 
     public void drawImage(Image image, int offsetX, int offsetY) {
-        for (int y = 0; y < image.getHeight(); y++) {
-            for (int x = 0; x < image.getWidth(); x++) {
+        int newX = 0;
+        int newY = 0;
+        int newWidth = image.getWidth();
+        int newHeight = image.getHeight();
+
+        //Render optimization
+
+        //Don't render
+        if (offsetX < -newWidth) {
+            return;
+        }
+        if (offsetY < -newHeight) {
+            return;
+        }
+        if (offsetX >= pW) {
+            return;
+        }
+        if (offsetY >= pH) {
+            return;
+        }
+
+        //Clipping code so we render o nly visible part of the image
+        if (offsetX < 0) {
+            newX -= offsetX;
+        }
+        if (offsetY < 0) {
+            newY -= offsetY;
+        }
+        if (newWidth + offsetX > pW) {
+            newWidth -= newWidth + offsetX - pW;
+        }
+        if (newHeight + offsetY > pH) {
+            newHeight -= newHeight + offsetY - pH;
+        }
+
+        for (int y = newY; y < newHeight; y++) {
+            for (int x = newX; x < newWidth; x++) {
 
                 //Getting pixel from the image at x and y Position
                 int pixelValue = image.getPixels()[x + y * image.getWidth()];

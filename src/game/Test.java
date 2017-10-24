@@ -29,6 +29,6 @@ public class Test extends AbstractGame {
 
     @Override
     public void render(GameContainer gc, Renderer r) {
-        r.drawImage(image, gc.getInput().getMouseX(), gc.getInput().getMouseY());
+        r.drawImage(image, gc.getInput().getMouseX() - 32, gc.getInput().getMouseY() - 32);
     }
 }
