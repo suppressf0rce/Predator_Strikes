@@ -1,5 +1,7 @@
 package engine;
 
+
+import engine.gfx.Font;
 import engine.gfx.Image;
 import engine.gfx.ImageTile;
 
@@ -31,7 +33,6 @@ public class Renderer {
     private int[] pixels;
 
     //===>Constructor<<===//
-
     /**
      * Default constructor for the game renderer
      *
@@ -47,7 +48,6 @@ public class Renderer {
 
 
     //===>Methods<<===//
-
     /**
      * This method clears the screen (Paints all pixels black)
      */
@@ -185,4 +185,29 @@ public class Renderer {
             }
         }
     }
+
+    public void drawText(String text, int offsetX, int offsetY, Font font) {
+
+        if (font == null)
+            font = Font.STANDARD_YELLOW;
+
+        int offset = 0;
+
+        for (int i = 0; i < text.length(); i++) {
+            int unicode = text.codePointAt(i) - 32;
+
+            for (int y = 0; y < font.getFontImage().getHeight(); y++) {
+                for (int x = 0; x < font.getWidths()[unicode]; x++) {
+
+                    //if(font.getFontImage().getPixels()[(x + font.getOffsets()[unicode]) + y * font.getFontImage().getWidth()] == 0xff000000)
+                    setPixel(x + offsetX + offset, y + offsetY, font.getFontImage().getPixels()[(x + font.getOffsets()[unicode]) + y * font.getFontImage().getWidth()]);
+                }
+            }
+
+            offset += font.getWidths()[unicode];
+        }
+    }
+
+
+    //===>>Getters & Setters<<===//
 }

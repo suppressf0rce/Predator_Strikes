@@ -3,6 +3,7 @@ package game;
 import engine.AbstractGame;
 import engine.GameContainer;
 import engine.Renderer;
+import engine.gfx.Font;
 import engine.gfx.ImageTile;
 
 import java.awt.event.KeyEvent;
@@ -12,6 +13,7 @@ public class Test extends AbstractGame {
     private ImageTile image;
     private float temp;
     private int temp2 = 0;
+    private Font font;
 
     public Test() {
         image = new ImageTile("res/testsprites.png", 125, 125);

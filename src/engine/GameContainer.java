@@ -106,7 +106,7 @@ public class GameContainer implements Runnable {
         //Variables for fps calculations
         double frameTime = 0;
         int frames = 0;
-        int fps;
+        int fps = 0;
 
         while (running) {
             render = false;
@@ -135,8 +135,6 @@ public class GameContainer implements Runnable {
                     frameTime = 0;
                     fps = frames;
                     frames = 0;
-
-                    System.out.println("FPS: " + fps);
                 }
             }
 
@@ -144,6 +142,7 @@ public class GameContainer implements Runnable {
             if (render) {
                 renderer.clear();
                 game.render(this, renderer);
+                renderer.drawText("FPS: " + fps, 0, 0, null);
                 window.update();
                 frames++;
 
