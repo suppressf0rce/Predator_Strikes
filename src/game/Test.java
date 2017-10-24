@@ -3,22 +3,35 @@ package game;
 import engine.AbstractGame;
 import engine.GameContainer;
 import engine.Renderer;
-import engine.gfx.Image;
+import engine.gfx.ImageTile;
 
 import java.awt.event.KeyEvent;
 
 public class Test extends AbstractGame {
 
-    Image image;
+    private ImageTile image;
+    private float temp;
+    private int temp2 = 0;
 
     public Test() {
-        image = new Image("res/smiley.png");
+        image = new ImageTile("res/testsprites.png", 125, 125);
     }
 
     @Override
     public void update(GameContainer gc, float dt) {
         if (gc.getInput().isKeyDown(KeyEvent.VK_A)) {
             System.out.println("A was pressed");
+        }
+
+        temp += dt * 15;
+
+        if (temp > 3) {
+            temp = 0;
+            temp2++;
+        }
+
+        if (temp2 > 3) {
+            temp2 = 0;
         }
     }
 
@@ -29,6 +42,6 @@ public class Test extends AbstractGame {
 
     @Override
     public void render(GameContainer gc, Renderer r) {
-        r.drawImage(image, gc.getInput().getMouseX() - 32, gc.getInput().getMouseY() - 32);
+        r.drawImageTile(image, gc.getInput().getMouseX() - 62, gc.getInput().getMouseY() - 62, (int) temp, temp2);
     }
 }

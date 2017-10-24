@@ -1,6 +1,7 @@
 package engine;
 
 import engine.gfx.Image;
+import engine.gfx.ImageTile;
 
 import java.awt.image.DataBufferInt;
 
@@ -46,12 +47,23 @@ public class Renderer {
 
 
     //===>Methods<<===//
+
+    /**
+     * This method clears the screen (Paints all pixels black)
+     */
     public void clear() {
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = 0xff000000; //Alpha 255, R 0, G 0, B 0
         }
     }
 
+    /**
+     * This method sets the specific pixel of the screen
+     *
+     * @param x     position of the pixel
+     * @param y     position of the pixel
+     * @param value value of the pixel in format 0xXXXXXXXX (Alpha,Red,Green,Blue)
+     */
     public void setPixel(int x, int y, int value) {
 
         //We are using 0xFFFF00FF as our invisible color so we don't want to render it
@@ -62,19 +74,19 @@ public class Renderer {
         pixels[x + y * pW] = value;
     }
 
+    /**
+     * This method draws the image on the screen
+     *
+     * @param image   an instance of {@link Image} that will be drawn
+     * @param offsetX an offset x position where it will be drawn
+     * @param offsetY an offset y position where it will be drawn
+     */
     public void drawImage(Image image, int offsetX, int offsetY) {
-        int newX = 0;
-        int newY = 0;
-        int newWidth = image.getWidth();
-        int newHeight = image.getHeight();
-
-        //Render optimization
-
         //Don't render
-        if (offsetX < -newWidth) {
+        if (offsetX < -image.getWidth()) {
             return;
         }
-        if (offsetY < -newHeight) {
+        if (offsetY < -image.getHeight()) {
             return;
         }
         if (offsetX >= pW) {
@@ -83,6 +95,13 @@ public class Renderer {
         if (offsetY >= pH) {
             return;
         }
+
+        int newX = 0;
+        int newY = 0;
+        int newWidth = image.getWidth();
+        int newHeight = image.getHeight();
+
+        //Render optimization
 
         //Clipping code so we render o nly visible part of the image
         if (offsetX < 0) {
@@ -103,6 +122,63 @@ public class Renderer {
 
                 //Getting pixel from the image at x and y Position
                 int pixelValue = image.getPixels()[x + y * image.getWidth()];
+
+                //Calling set pixel method
+                setPixel(x + offsetX, y + offsetY, pixelValue);
+            }
+        }
+    }
+
+    /**
+     * This method draws the single tile / sprite from {@link ImageTile}
+     *
+     * @param image   an instance of {@link ImageTile}
+     * @param offsetX an offset x position where it will be drawn
+     * @param offsetY an offset y position where it will be drawn
+     * @param tileX   an tile X position from tile image matrix (indexing begins at 0)
+     * @param tileY   and tile Y posit from tile image matrix (indexing begins at 0)
+     */
+    public void drawImageTile(ImageTile image, int offsetX, int offsetY, int tileX, int tileY) {
+        //Don't render
+        if (offsetX < -image.getTileWidth()) {
+            return;
+        }
+        if (offsetY < -image.getTileHeight()) {
+            return;
+        }
+        if (offsetX >= pW) {
+            return;
+        }
+        if (offsetY >= pH) {
+            return;
+        }
+
+        int newX = 0;
+        int newY = 0;
+        int newWidth = image.getTileWidth();
+        int newHeight = image.getTileHeight();
+
+        //Render optimization
+
+        //Clipping code so we render o nly visible part of the image
+        if (offsetX < 0) {
+            newX -= offsetX;
+        }
+        if (offsetY < 0) {
+            newY -= offsetY;
+        }
+        if (newWidth + offsetX > pW) {
+            newWidth -= newWidth + offsetX - pW;
+        }
+        if (newHeight + offsetY > pH) {
+            newHeight -= newHeight + offsetY - pH;
+        }
+
+        for (int y = newY; y < newHeight; y++) {
+            for (int x = newX; x < newWidth; x++) {
+
+                //Getting pixel from the image at x and y Position
+                int pixelValue = image.getPixels()[(x + tileX * image.getTileWidth()) + (y + tileY * image.getTileHeight()) * image.getWidth()];
 
                 //Calling set pixel method
                 setPixel(x + offsetX, y + offsetY, pixelValue);
