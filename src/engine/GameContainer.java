@@ -52,6 +52,12 @@ public class GameContainer implements Runnable {
 
     /**
      * Global constructor for {@link GameContainer}
+     * @param game an instance of {@link AbstractGame} that will be contained
+     * @param refreshRate refresh rate of the game
+     * @param width of the game window
+     * @param height of the game window
+     * @param scale scale of the game
+     * @param title of the Game window
      */
     public GameContainer(AbstractGame game, int refreshRate, int width, int height, float scale, String title) {
         this.game = game;

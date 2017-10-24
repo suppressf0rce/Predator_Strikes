@@ -26,7 +26,7 @@ public class GameWindow {
      * @param gc an {@link GameContainer} so we can access the info from game loop
      */
     public GameWindow(GameContainer gc) {
-        image = new BufferedImage(gc.getWidth(), gc.getHeight(), BufferedImage.TYPE_INT_RGB);
+        image = new BufferedImage(gc.getWidth(), gc.getHeight(), BufferedImage.TYPE_INT_ARGB);
         canvas = new Canvas();
         Dimension s = new Dimension((int) (gc.getWidth() * gc.getScale()), (int) (gc.getHeight() * gc.getScale()));
 
