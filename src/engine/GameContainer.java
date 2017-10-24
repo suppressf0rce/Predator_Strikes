@@ -46,14 +46,16 @@ public class GameContainer implements Runnable {
      */
     private Input input;
 
+    private AbstractGame game;
+
     //===>>Constructor<<===//
 
     /**
      * Global constructor for {@link GameContainer}
-     *
-     * @param refreshRate the actual refresh rate of the game
      */
-    public GameContainer(int refreshRate, int width, int height, float scale, String title) {
+    public GameContainer(AbstractGame game, int refreshRate, int width, int height, float scale, String title) {
+        this.game = game;
+
         UPDATE_CAP = 1.0 / refreshRate;
         this.width = width;
         this.height = height;
@@ -119,7 +121,7 @@ public class GameContainer implements Runnable {
                 unprocessedTime -= UPDATE_CAP;
                 render = true;
 
-                //TODO: Update the game
+                game.update(this, (float) UPDATE_CAP);
 
                 input.update();
 
@@ -135,7 +137,7 @@ public class GameContainer implements Runnable {
             //Some game engine optimization
             if (render) {
                 renderer.clear();
-                //TODO: Render game
+                game.render(this, renderer);
                 window.update();
                 frames++;
 
@@ -193,5 +195,9 @@ public class GameContainer implements Runnable {
 
     public GameWindow getWindow() {
         return window;
+    }
+
+    public Input getInput() {
+        return input;
     }
 }
