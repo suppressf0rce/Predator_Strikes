@@ -41,6 +41,11 @@ public class GameContainer implements Runnable {
      */
     private Renderer renderer;
 
+    /**
+     * Game input
+     */
+    private Input input;
+
     //===>>Constructor<<===//
 
     /**
@@ -65,6 +70,9 @@ public class GameContainer implements Runnable {
 
         //Initialize game renderer
         renderer = new Renderer(this);
+
+        //Initialize input
+        input = new Input(this);
 
         //Initialize game thread
         gameThread = new Thread(this);
@@ -111,6 +119,10 @@ public class GameContainer implements Runnable {
                 unprocessedTime -= UPDATE_CAP;
                 render = true;
 
+                //TODO: Update the game
+
+                input.update();
+
                 if (frameTime >= 1.0) {
                     frameTime = 0;
                     fps = frames;
@@ -118,7 +130,6 @@ public class GameContainer implements Runnable {
 
                     System.out.println("FPS: " + fps);
                 }
-                //TODO: Update the game
             }
 
             //Some game engine optimization
