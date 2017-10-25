@@ -68,7 +68,7 @@ public class Renderer {
 
         //We are using 0xFFFF00FF as our invisible color so we don't want to render it
         //it is A: 255, R: 255, G: 0, B: 255
-        if ((x < 0 || x >= pW || y < 0 || y >= pH) || ((value >> 24) == 0x00)) //Shifting for 24 bits to the right and checking if the alpha is 00
+        if ((x < 0 || x >= pW || y < 0 || y >= pH) || ((value >> 24) & 0xff) == 0x00) //Shifting for 24 bits to the right and checking if the alpha is 00
             return;
 
         pixels[x + y * pW] = value;
@@ -205,6 +205,60 @@ public class Renderer {
             }
 
             offset += font.getWidths()[unicode];
+        }
+    }
+
+    public void drawRect(int offsetX, int offsetY, int width, int height, int color) {
+        for (int y = 0; y <= height; y++) {
+            setPixel(offsetX, y + offsetY, color);
+            setPixel(offsetX + width, y + offsetY, color);
+        }
+
+        for (int x = 0; x <= width; x++) {
+            setPixel(x + offsetX, offsetY, color);
+            setPixel(x + offsetX, height + offsetY, color);
+        }
+    }
+
+    public void drawFillRect(int offsetX, int offsetY, int width, int height, int color) {
+        //Don't render
+        if (offsetX < -width) {
+            return;
+        }
+        if (offsetY < -height) {
+            return;
+        }
+        if (offsetX >= pW) {
+            return;
+        }
+        if (offsetY >= pH) {
+            return;
+        }
+
+        int newX = 0;
+        int newY = 0;
+        int newWidth = width;
+        int newHeight = height;
+
+        //Render optimization
+
+        //Clipping code so we render o nly visible part of the image
+        if (offsetX < 0) {
+            newX -= offsetX;
+        }
+        if (offsetY < 0) {
+            newY -= offsetY;
+        }
+        if (newWidth + offsetX > pW) {
+            newWidth -= newWidth + offsetX - pW;
+        }
+        if (newHeight + offsetY > pH) {
+            newHeight -= newHeight + offsetY - pH;
+        }
+        for (int y = newY; y <= newHeight; y++) {
+            for (int x = newX; x <= newWidth; x++) {
+                setPixel(x + offsetX, y + offsetY, color);
+            }
         }
     }
 

@@ -23,9 +23,11 @@ public class GameContainer implements Runnable {
     private boolean running = false;
     private final double UPDATE_CAP;
 
-    private int width, height;
-    private float scale;
-    private String title;
+    private int width = 320, height = 240;
+    private float scale = 1f;
+    private String title = "Simple 2D Engine";
+    private int refreshRate = 60;
+    private boolean capFps = false;
 
     /**
      * Game window of our game
@@ -53,20 +55,11 @@ public class GameContainer implements Runnable {
     /**
      * Global constructor for {@link GameContainer}
      * @param game an instance of {@link AbstractGame} that will be contained
-     * @param refreshRate refresh rate of the game
-     * @param width of the game window
-     * @param height of the game window
-     * @param scale scale of the game
-     * @param title of the Game window
      */
-    public GameContainer(AbstractGame game, int refreshRate, int width, int height, float scale, String title) {
+    public GameContainer(AbstractGame game) {
         this.game = game;
 
         UPDATE_CAP = 1.0 / refreshRate;
-        this.width = width;
-        this.height = height;
-        this.title = title;
-        this.scale = scale;
     }
 
 
@@ -109,7 +102,7 @@ public class GameContainer implements Runnable {
         int fps = 0;
 
         while (running) {
-            render = false;
+            render = !capFps;
 
             firstTime = System.nanoTime() / 1000000000.0;
             passedTime = firstTime - lastTime;
@@ -204,5 +197,13 @@ public class GameContainer implements Runnable {
 
     public Input getInput() {
         return input;
+    }
+
+    public int getRefreshRate() {
+        return refreshRate;
+    }
+
+    public void setRefreshRate(int refreshRate) {
+        this.refreshRate = refreshRate;
     }
 }
