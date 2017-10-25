@@ -3,26 +3,29 @@ package game;
 import engine.AbstractGame;
 import engine.GameContainer;
 import engine.Renderer;
-import engine.gfx.Font;
 import engine.gfx.ImageTile;
+import engine.sfx.SoundClip;
 
 import java.awt.event.KeyEvent;
 
 public class Test extends AbstractGame {
 
     private ImageTile image;
+    private SoundClip runningSFX;
+
     private float temp;
     private int temp2 = 0;
-    private Font font;
 
     public Test() {
         image = new ImageTile("res/testsprites.png", 125, 125);
+        runningSFX = new SoundClip("res/bgRunningMusic.wav");
+        runningSFX.setVolume(-20);
     }
 
     @Override
     public void update(GameContainer gc, float dt) {
         if (gc.getInput().isKeyDown(KeyEvent.VK_A)) {
-            System.out.println("A was pressed");
+            runningSFX.loop();
         }
 
         temp += dt * 15;

@@ -42,7 +42,7 @@ public class GameWindow {
         frame.add(canvas, BorderLayout.CENTER);
         frame.pack();
         frame.setLocationRelativeTo(null); //Putting JFrame at the center of screen
-        frame.setResizable(false); //We don't wanna let people mess with our frame
+        SwingUtilities.invokeLater(() -> frame.setResizable(false));
         frame.setVisible(true);
 
         //Setting up buffer strategy
