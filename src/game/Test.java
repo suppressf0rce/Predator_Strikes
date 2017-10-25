@@ -3,23 +3,26 @@ package game;
 import engine.AbstractGame;
 import engine.GameContainer;
 import engine.Renderer;
-import engine.gfx.ImageTile;
+import engine.gfx.Image;
 import engine.sfx.SoundClip;
 
 import java.awt.event.KeyEvent;
 
 public class Test extends AbstractGame {
 
-    private ImageTile image;
+    private Image image;
+    private Image image2;
     private SoundClip runningSFX;
 
     private float temp;
     private int temp2 = 0;
 
     public Test() {
-        image = new ImageTile("res/testsprites.png", 125, 125);
+        image = new Image("res/test.png");
+        image2 = new Image("res/smiley.png");
         runningSFX = new SoundClip("res/bgRunningMusic.wav");
         runningSFX.setVolume(-20);
+        image2.setAlpha(true);
     }
 
     @Override
@@ -50,9 +53,7 @@ public class Test extends AbstractGame {
 
     @Override
     public void render(GameContainer gc, Renderer r) {
-
-        r.drawFillRect(50, 50, 100, 100, 0xffff0000);
-
-        r.drawImageTile(image, gc.getInput().getMouseX() - 62, gc.getInput().getMouseY() - 62, (int) temp, temp2);
+        r.drawImage(image2, gc.getInput().getMouseX() - 32, gc.getInput().getMouseY() - 32);
+        r.drawImage(image, 30, 30);
     }
 }

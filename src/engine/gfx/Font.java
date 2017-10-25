@@ -3,8 +3,7 @@ package engine.gfx;
 public class Font {
 
     //===>>Variables<<===//
-    public static final Font STANDARD_WHITE = new Font("res/inconsolata_14pt_white.png", 95);
-    public static final Font STANDARD_YELLOW = new Font("res/inconsolata_14pt_yellow.png", 95);
+    public static final Font STANDARD = new Font("res/inconsolata_14pt.png", 1000, 6);
 
     private Image fontImage;
     private int[] offsets;
@@ -23,26 +22,32 @@ public class Font {
      *
      * @param path to the font sheet
      */
-    public Font(String path, int numOfLetters) {
+    public Font(String path, int numOfLetters, int offsetY) {
         fontImage = new Image(path);
 
         offsets = new int[numOfLetters];
         widths = new int[numOfLetters];
 
+        boolean firstTime = true;
+
         int unicode = 0;
 
         for (int i = 0; i < fontImage.getWidth(); i++) {
 
+            int alpha = ((fontImage.getPixels()[i + offsetY * fontImage.getWidth()] >> 24) & 0xff);
             //Search for blue pixel that means beginning of letter
-            if (fontImage.getPixels()[i] == 0xff0000ff)
-                offsets[unicode] = i + 1;
+            if (alpha == 255) {
 
-            //Search for yellow pixel that means end of the letter
-            if (fontImage.getPixels()[i] == 0xffffff00) {
-                widths[unicode] = i - offsets[unicode];
-                unicode++;
+                if (!firstTime || i == fontImage.getWidth() - 1) {
+                    widths[unicode] = i - offsets[unicode];
+                    unicode++;
+                }
+
+                offsets[unicode] = i + 1;
+                firstTime = false;
             }
         }
+        System.out.println(unicode);
     }
 
 

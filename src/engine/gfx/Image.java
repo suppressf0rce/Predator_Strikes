@@ -13,7 +13,7 @@ public class Image {
     //===>>Variables<<===//
     private int width, height;
     private int[] pixels;
-
+    private boolean alpha = false;
 
     //===>>Constructor<<===//
 
@@ -23,7 +23,7 @@ public class Image {
      * @param path to the image to load
      */
     public Image(String path) {
-        BufferedImage image = null;
+        BufferedImage image;
 
         //Try loading image from the path
         try {
@@ -63,5 +63,13 @@ public class Image {
 
     public void setPixels(int[] pixels) {
         this.pixels = pixels;
+    }
+
+    public boolean isAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(boolean alpha) {
+        this.alpha = alpha;
     }
 }

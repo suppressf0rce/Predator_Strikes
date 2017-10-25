@@ -3,9 +3,11 @@ package engine;
 
 import engine.gfx.Font;
 import engine.gfx.Image;
+import engine.gfx.ImageRequest;
 import engine.gfx.ImageTile;
 
 import java.awt.image.DataBufferInt;
+import java.util.ArrayList;
 
 /**
  * This class represents the renderer for our game loop and Game window
@@ -31,6 +33,13 @@ public class Renderer {
      * Pixels array
      */
     private int[] pixels;
+    /**
+     * Z axis buffer (image stacking on top of each other)
+     */
+    private int[] zBuffer;
+    private int zDepth = 0;
+    private boolean processing = false;
+    private ArrayList<ImageRequest> imageRequest = new ArrayList<>();
 
     //===>Constructor<<===//
     /**
@@ -44,6 +53,8 @@ public class Renderer {
 
         //Gets the direct access of pixel data of the image raster pixel array
         pixels = ((DataBufferInt) gc.getWindow().getImage().getRaster().getDataBuffer()).getData();
+
+        zBuffer = new int[pixels.length];
     }
 
 
@@ -54,7 +65,21 @@ public class Renderer {
     public void clear() {
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = 0xff000000; //Alpha 255, R 0, G 0, B 0
+            zBuffer[i] = 0;
         }
+    }
+
+    /**
+     * Processes which object will be rendered first and which will be rendered last
+     */
+    public void process() {
+        processing = true;
+        for (ImageRequest ir : imageRequest) {
+            setzDepth(ir.zDepth);
+            drawImage(ir.image, ir.offsetX, ir.offsetY);
+        }
+        imageRequest.clear();
+        processing = false;
     }
 
     /**
@@ -66,12 +91,33 @@ public class Renderer {
      */
     public void setPixel(int x, int y, int value) {
 
+        int alpha = ((value >> 24) & 0xff);
         //We are using 0xFFFF00FF as our invisible color so we don't want to render it
         //it is A: 255, R: 255, G: 0, B: 255
-        if ((x < 0 || x >= pW || y < 0 || y >= pH) || ((value >> 24) & 0xff) == 0x00) //Shifting for 24 bits to the right and checking if the alpha is 00
+        if ((x < 0 || x >= pW || y < 0 || y >= pH) || alpha == 0) //Shifting for 24 bits to the right and checking if the alpha is 00
             return;
 
-        pixels[x + y * pW] = value;
+        if (zBuffer[x + y * pW] > zDepth)
+            return;
+
+        if (alpha == 255) {
+            pixels[x + y * pW] = value;
+        } else {
+            //Alpha is not 255 and we have transparent pixel
+
+            //Some mambo jambo jimble jumble jet bullshit goin on here. #Urke approves
+            int pixelColor = pixels[x + y * pW];
+
+            //Blending colors
+            //Will comment out later what does this math quotation means
+            int newRed = ((pixelColor >> 16) & 0xff) - (int) ((((pixelColor >> 16) & 0xff) - ((value >> 16) & 0xff)) * (alpha / 255f));
+            int newGreen = ((pixelColor >> 8) & 0xff) - (int) ((((pixelColor >> 8) & 0xff) - ((value >> 8) & 0xff)) * (alpha / 255f));
+            int newBlue = (pixelColor & 0xff) - (int) (((pixelColor & 0xff) - (value & 0xff)) * (alpha / 255f));
+
+
+            //noinspection NumericOverflow
+            pixels[x + y * pW] = (255 << 24 | newRed << 16 | newGreen << 8 | newBlue);
+        }
     }
 
     /**
@@ -82,6 +128,11 @@ public class Renderer {
      * @param offsetY an offset y position where it will be drawn
      */
     public void drawImage(Image image, int offsetX, int offsetY) {
+        if (image.isAlpha() && !processing) {
+            imageRequest.add(new ImageRequest(image, zDepth, offsetX, offsetY));
+            return;
+        }
+
         //Don't render
         if (offsetX < -image.getWidth()) {
             return;
@@ -186,10 +237,18 @@ public class Renderer {
         }
     }
 
+    /**
+     * Draws text to the screen
+     *
+     * @param text    an String of the text that will be drawn
+     * @param offsetX x position on the screen where drawing will start
+     * @param offsetY y position on the screen where drawing will start
+     * @param font    an instance of {@link Font} which will be used for drawing
+     */
     public void drawText(String text, int offsetX, int offsetY, Font font) {
 
         if (font == null)
-            font = Font.STANDARD_YELLOW;
+            font = Font.STANDARD;
 
         int offset = 0;
 
@@ -208,6 +267,15 @@ public class Renderer {
         }
     }
 
+    /**
+     * This method draws empty rectangle on the screen
+     *
+     * @param offsetX an x position where rectangle will begin its drawing
+     * @param offsetY an y position where rectangle will begin its drawing
+     * @param width   an width of the rectangle
+     * @param height  an height of the rectangle
+     * @param color   represents the color for rect lines
+     */
     public void drawRect(int offsetX, int offsetY, int width, int height, int color) {
         for (int y = 0; y <= height; y++) {
             setPixel(offsetX, y + offsetY, color);
@@ -220,6 +288,15 @@ public class Renderer {
         }
     }
 
+    /**
+     * This method draws an filled rectangle on the screen
+     *
+     * @param offsetX an x position where rectangle will begin its drawing
+     * @param offsetY an y position where rectangle will begin its drawing
+     * @param width   an width of the rectangle
+     * @param height  an height of the rectangle
+     * @param color   represents the color for rectangle
+     */
     public void drawFillRect(int offsetX, int offsetY, int width, int height, int color) {
         //Don't render
         if (offsetX < -width) {
@@ -264,4 +341,11 @@ public class Renderer {
 
 
     //===>>Getters & Setters<<===//
+    public int getzDepth() {
+        return zDepth;
+    }
+
+    public void setzDepth(int zDepth) {
+        this.zDepth = zDepth;
+    }
 }
