@@ -41,6 +41,16 @@ public class Renderer {
     private boolean processing = false;
     private ArrayList<ImageRequest> imageRequest = new ArrayList<>();
 
+    /**
+     * A Light map of our lighting pixels
+     */
+    private int[] lightMap;
+
+    /**
+     * An int array which tells if pixel blocks the lighting
+     */
+    private int[] lightBlock;
+
     //===>Constructor<<===//
     /**
      * Default constructor for the game renderer
@@ -55,6 +65,8 @@ public class Renderer {
         pixels = ((DataBufferInt) gc.getWindow().getImage().getRaster().getDataBuffer()).getData();
 
         zBuffer = new int[pixels.length];
+        lightMap = new int[pixels.length];
+        lightBlock = new int[pixels.length];
     }
 
 
@@ -74,6 +86,16 @@ public class Renderer {
      */
     public void process() {
         processing = true;
+
+        imageRequest.sort((i0, i1) -> {
+            if (i0.zDepth < i1.zDepth) {
+                return -1;
+            } else if (i0.zDepth > i1.zDepth) {
+                return 1;
+            }
+            return 0;
+        });
+
         for (ImageRequest ir : imageRequest) {
             setzDepth(ir.zDepth);
             drawImage(ir.image, ir.offsetX, ir.offsetY);
@@ -97,16 +119,20 @@ public class Renderer {
         if ((x < 0 || x >= pW || y < 0 || y >= pH) || alpha == 0) //Shifting for 24 bits to the right and checking if the alpha is 00
             return;
 
-        if (zBuffer[x + y * pW] > zDepth)
+        int index = x + y * pW;
+
+        if (zBuffer[index] > zDepth)
             return;
 
+        zBuffer[index] = zDepth;
+
         if (alpha == 255) {
-            pixels[x + y * pW] = value;
+            pixels[index] = value;
         } else {
             //Alpha is not 255 and we have transparent pixel
 
             //Some mambo jambo jimble jumble jet bullshit goin on here. #Urke approves
-            int pixelColor = pixels[x + y * pW];
+            int pixelColor = pixels[index];
 
             //Blending colors
             //Will comment out later what does this math quotation means
@@ -116,7 +142,7 @@ public class Renderer {
 
 
             //noinspection NumericOverflow
-            pixels[x + y * pW] = (255 << 24 | newRed << 16 | newGreen << 8 | newBlue);
+            pixels[index] = (255 << 24 | newRed << 16 | newGreen << 8 | newBlue);
         }
     }
 
@@ -190,6 +216,11 @@ public class Renderer {
      * @param tileY   and tile Y posit from tile image matrix (indexing begins at 0)
      */
     public void drawImageTile(ImageTile image, int offsetX, int offsetY, int tileX, int tileY) {
+        if (image.isAlpha() && !processing) {
+            imageRequest.add(new ImageRequest(image.getTileImage(tileX, tileY), zDepth, offsetX, offsetY));
+            return;
+        }
+
         //Don't render
         if (offsetX < -image.getTileWidth()) {
             return;
@@ -332,8 +363,8 @@ public class Renderer {
         if (newHeight + offsetY > pH) {
             newHeight -= newHeight + offsetY - pH;
         }
-        for (int y = newY; y <= newHeight; y++) {
-            for (int x = newX; x <= newWidth; x++) {
+        for (int y = newY; y < newHeight; y++) {
+            for (int x = newX; x < newWidth; x++) {
                 setPixel(x + offsetX, y + offsetY, color);
             }
         }

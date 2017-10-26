@@ -8,6 +8,7 @@ import java.io.IOException;
 /**
  * This class represents the graphical images drawn in the game
  */
+@SuppressWarnings("WeakerAccess")
 public class Image {
 
     //===>>Variables<<===//
@@ -38,6 +39,12 @@ public class Image {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Image(int[] pixels, int width, int height) {
+        this.pixels = pixels;
+        this.width = width;
+        this.height = height;
     }
 
     //===>>Getters & Setters<<===//

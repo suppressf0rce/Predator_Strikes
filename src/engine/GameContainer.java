@@ -207,4 +207,12 @@ public class GameContainer implements Runnable {
     public void setRefreshRate(int refreshRate) {
         this.refreshRate = refreshRate;
     }
+
+    public boolean isCapFps() {
+        return capFps;
+    }
+
+    public void setCapFps(boolean capFps) {
+        this.capFps = capFps;
+    }
 }

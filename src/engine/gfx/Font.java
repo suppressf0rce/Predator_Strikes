@@ -1,5 +1,6 @@
 package engine.gfx;
 
+@SuppressWarnings("WeakerAccess")
 public class Font {
 
     //===>>Variables<<===//
@@ -47,7 +48,6 @@ public class Font {
                 firstTime = false;
             }
         }
-        System.out.println(unicode);
     }
 
 
