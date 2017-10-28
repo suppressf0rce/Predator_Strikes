@@ -45,7 +45,7 @@ public class Renderer {
      * A Light map of our lighting pixels
      */
     private int[] lightMap;
-
+    private int ambiantColor = 0x6b6b6b;
     /**
      * An int array which tells if pixel blocks the lighting
      */
@@ -78,6 +78,8 @@ public class Renderer {
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = 0xff000000; //Alpha 255, R 0, G 0, B 0
             zBuffer[i] = 0;
+            lightMap[i] = ambiantColor;
+            lightBlock[i] = 0;
         }
     }
 
@@ -100,6 +102,22 @@ public class Renderer {
             setzDepth(ir.zDepth);
             drawImage(ir.image, ir.offsetX, ir.offsetY);
         }
+
+        for (int i = 0; i < pixels.length; i++) {
+            float r = ((lightMap[i] >> 16) & 0xff) / 255f;
+            float g = ((lightMap[i] >> 8) & 0xff) / 255f;
+            float b = (lightMap[i] & 0xff) / 255f;
+
+            //System.out.println((lightMap[i] & 0xff) / 255f);
+            //System.out.println(String.format("%08x", lightMap[i]));
+            //System.out.println(pixels[i]);
+            //System.out.println("R:"+r+"G:"+g+"B:"+b);
+
+            pixels[i] = ((int) (((pixels[i] >> 16) & 0xff) * r) << 16 | (int) (((pixels[i] >> 8) & 0xff) * g) << 8 | (int) ((pixels[i] & 0xff) * b));
+
+            //System.out.println(pixels[i]);
+        }
+
         imageRequest.clear();
         processing = false;
     }
@@ -144,6 +162,21 @@ public class Renderer {
             //noinspection NumericOverflow
             pixels[index] = (255 << 24 | newRed << 16 | newGreen << 8 | newBlue);
         }
+    }
+
+    public void setLightMap(int x, int y, int value) {
+        if (x < 0 || x >= pW || y < 0 || y >= pH) {
+            return;
+        }
+
+        int baseColor = lightMap[x + y * pW];
+
+        int maxRed = Math.max((baseColor >> 16) & 0xff, (value >> 16) & 0xff);
+        int maxGreen = Math.max((baseColor >> 8) & 0xff, (value >> 8) & 0xff);
+        int maxBlue = Math.max(baseColor & 0xff, (value & 0xff));
+
+        lightMap[x + y * pW] = (maxRed << 16 | maxGreen << 8 | maxBlue);
+
     }
 
     /**

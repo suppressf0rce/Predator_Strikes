@@ -71,6 +71,7 @@ public class Test extends AbstractGame {
 
     @Override
     public void render(GameContainer gc, Renderer r) {
+
         r.drawImage(image, 30, 30);
 
         if (renderSprite)
