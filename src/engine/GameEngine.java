@@ -127,7 +127,7 @@ public class GameEngine implements Runnable {
                 renderer.clear();
                 state.render(renderer);
                 if (debug)
-                    renderer.drawString("Fps-" + fps, 0xffffffff, 0, null);
+                    renderer.drawString("FPS: " + fps, 0xffffffff, 0, null);
 
                 window.update();
                 frames++;
