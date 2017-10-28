@@ -19,9 +19,9 @@ public class GameWindow {
     private Graphics graphics;
 
     private String title = "Game Engine";
-    private int width = 640;
-    private int height = 480;
-    private float scale = 2f;
+    private int width = 1024;
+    private int height = 720;
+    private float scale = 1f;
 
     //===>>Constructor<<===//
 
