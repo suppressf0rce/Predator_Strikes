@@ -13,73 +13,53 @@ import java.util.ArrayList;
  * This class represents the renderer for our game loop and Game window
  *
  * @see GameWindow
- * @see GameContainer
+ * @see GameEngine
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "NumericOverflow"})
 public class Renderer {
 
-    //===>>Variables<<==//
-    /**
-     * Pixel width
-     */
-    private int pW;
+    boolean processing = true;
 
-    /**
-     * Pixel height
-     */
-    private int pH;
-
-    /**
-     * Pixels array
-     */
     private int[] pixels;
-    /**
-     * Z axis buffer (image stacking on top of each other)
-     */
-    private int[] zBuffer;
-    private int zDepth = 0;
-    private boolean processing = false;
-    private ArrayList<ImageRequest> imageRequest = new ArrayList<>();
+    //===>>Variables<<==//
+    private Font font = Font.STANDARD;
+    private int[] depthBuffer;
+    private int width, height, depth;
 
-    /**
-     * A Light map of our lighting pixels
-     */
+    private ArrayList<ImageRequest> imageRequest = new ArrayList<>();
+    private int limX, limY, limW, limH;
+
     private int[] lightMap;
-    private int ambiantColor = 0x6b6b6b;
-    /**
-     * An int array which tells if pixel blocks the lighting
-     */
-    private int[] lightBlock;
 
     //===>Constructor<<===//
+
     /**
      * Default constructor for the game renderer
-     *
-     * @param gc an {@link GameContainer]} so we can access game loop info
      */
-    public Renderer(GameContainer gc) {
-        pW = gc.getWidth();
-        pH = gc.getHeight();
+    public Renderer() {
+        width = GameEngine.getWindow().getWidth();
+        height = GameEngine.getWindow().getHeight();
+        pixels = ((DataBufferInt) GameEngine.getWindow().getImage().getRaster().getDataBuffer()).getData();
 
-        //Gets the direct access of pixel data of the image raster pixel array
-        pixels = ((DataBufferInt) gc.getWindow().getImage().getRaster().getDataBuffer()).getData();
-
-        zBuffer = new int[pixels.length];
+        depthBuffer = new int[pixels.length];
         lightMap = new int[pixels.length];
-        lightBlock = new int[pixels.length];
+
+        limX = 0;
+        limY = 0;
+        limW = width;
+        limH = height;
     }
 
 
     //===>Methods<<===//
+
     /**
-     * This method clears the screen (Paints all pixels black)
+     * This method clears the buffer
      */
     public void clear() {
         for (int i = 0; i < pixels.length; i++) {
-            pixels[i] = 0xff000000; //Alpha 255, R 0, G 0, B 0
-            zBuffer[i] = 0;
-            lightMap[i] = ambiantColor;
-            lightBlock[i] = 0;
+            //pixels[i] = 0xff000000; //Alpha 255, R 0, G 0, B 0
+            depthBuffer[i] = 0;
         }
     }
 
@@ -99,24 +79,24 @@ public class Renderer {
         });
 
         for (ImageRequest ir : imageRequest) {
-            setzDepth(ir.zDepth);
+            setDepth(ir.zDepth);
             drawImage(ir.image, ir.offsetX, ir.offsetY);
         }
 
-        for (int i = 0; i < pixels.length; i++) {
-            float r = ((lightMap[i] >> 16) & 0xff) / 255f;
-            float g = ((lightMap[i] >> 8) & 0xff) / 255f;
-            float b = (lightMap[i] & 0xff) / 255f;
-
-            //System.out.println((lightMap[i] & 0xff) / 255f);
-            //System.out.println(String.format("%08x", lightMap[i]));
-            //System.out.println(pixels[i]);
-            //System.out.println("R:"+r+"G:"+g+"B:"+b);
-
-            pixels[i] = ((int) (((pixels[i] >> 16) & 0xff) * r) << 16 | (int) (((pixels[i] >> 8) & 0xff) * g) << 8 | (int) ((pixels[i] & 0xff) * b));
-
-            //System.out.println(pixels[i]);
-        }
+//        for (int i = 0; i < pixels.length; i++) {
+//            float r = ((lightMap[i] >> 16) & 0xff) / 255f;
+//            float g = ((lightMap[i] >> 8) & 0xff) / 255f;
+//            float b = (lightMap[i] & 0xff) / 255f;
+//
+//            //System.out.println((lightMap[i] & 0xff) / 255f);
+//            //System.out.println(String.format("%08x", lightMap[i]));
+//            //System.out.println(pixels[i]);
+//            //System.out.println("R:"+r+"G:"+g+"B:"+b);
+//
+//            pixels[i] = ((int) (((pixels[i] >> 16) & 0xff) * r) << 16 | (int) (((pixels[i] >> 8) & 0xff) * g) << 8 | (int) ((pixels[i] & 0xff) * b));
+//
+//            //System.out.println(pixels[i]);
+//        }
 
         imageRequest.clear();
         processing = false;
@@ -134,15 +114,15 @@ public class Renderer {
         int alpha = ((value >> 24) & 0xff);
         //We are using 0xFFFF00FF as our invisible color so we don't want to render it
         //it is A: 255, R: 255, G: 0, B: 255
-        if ((x < 0 || x >= pW || y < 0 || y >= pH) || alpha == 0) //Shifting for 24 bits to the right and checking if the alpha is 00
+        if ((x < limX || x >= limX + limW || y < limY || y >= limY + limH) || alpha == 0) //Shifting for 24 bits to the right and checking if the alpha is 00
             return;
 
-        int index = x + y * pW;
+        int index = x + y * width;
 
-        if (zBuffer[index] > zDepth)
+        if (depthBuffer[index] > depth)
             return;
 
-        zBuffer[index] = zDepth;
+        depthBuffer[index] = depth;
 
         if (alpha == 255) {
             pixels[index] = value;
@@ -165,17 +145,17 @@ public class Renderer {
     }
 
     public void setLightMap(int x, int y, int value) {
-        if (x < 0 || x >= pW || y < 0 || y >= pH) {
+        if (x < 0 || x >= width || y < 0 || y >= height) {
             return;
         }
 
-        int baseColor = lightMap[x + y * pW];
+        int baseColor = lightMap[x + y * width];
 
         int maxRed = Math.max((baseColor >> 16) & 0xff, (value >> 16) & 0xff);
         int maxGreen = Math.max((baseColor >> 8) & 0xff, (value >> 8) & 0xff);
         int maxBlue = Math.max(baseColor & 0xff, (value & 0xff));
 
-        lightMap[x + y * pW] = (maxRed << 16 | maxGreen << 8 | maxBlue);
+        lightMap[x + y * width] = (maxRed << 16 | maxGreen << 8 | maxBlue);
 
     }
 
@@ -188,7 +168,7 @@ public class Renderer {
      */
     public void drawImage(Image image, int offsetX, int offsetY) {
         if (image.isAlpha() && !processing) {
-            imageRequest.add(new ImageRequest(image, zDepth, offsetX, offsetY));
+            imageRequest.add(new ImageRequest(image, depth, offsetX, offsetY));
             return;
         }
 
@@ -199,10 +179,10 @@ public class Renderer {
         if (offsetY < -image.getHeight()) {
             return;
         }
-        if (offsetX >= pW) {
+        if (offsetX >= width) {
             return;
         }
-        if (offsetY >= pH) {
+        if (offsetY >= height) {
             return;
         }
 
@@ -220,11 +200,11 @@ public class Renderer {
         if (offsetY < 0) {
             newY -= offsetY;
         }
-        if (newWidth + offsetX > pW) {
-            newWidth -= newWidth + offsetX - pW;
+        if (newWidth + offsetX > width) {
+            newWidth -= newWidth + offsetX - width;
         }
-        if (newHeight + offsetY > pH) {
-            newHeight -= newHeight + offsetY - pH;
+        if (newHeight + offsetY > height) {
+            newHeight -= newHeight + offsetY - height;
         }
 
         for (int y = newY; y < newHeight; y++) {
@@ -250,7 +230,7 @@ public class Renderer {
      */
     public void drawImageTile(ImageTile image, int offsetX, int offsetY, int tileX, int tileY) {
         if (image.isAlpha() && !processing) {
-            imageRequest.add(new ImageRequest(image.getTileImage(tileX, tileY), zDepth, offsetX, offsetY));
+            imageRequest.add(new ImageRequest(image.getTileImage(tileX, tileY), depth, offsetX, offsetY));
             return;
         }
 
@@ -261,10 +241,10 @@ public class Renderer {
         if (offsetY < -image.getTileHeight()) {
             return;
         }
-        if (offsetX >= pW) {
+        if (offsetX >= width) {
             return;
         }
-        if (offsetY >= pH) {
+        if (offsetY >= height) {
             return;
         }
 
@@ -282,11 +262,11 @@ public class Renderer {
         if (offsetY < 0) {
             newY -= offsetY;
         }
-        if (newWidth + offsetX > pW) {
-            newWidth -= newWidth + offsetX - pW;
+        if (newWidth + offsetX > width) {
+            newWidth -= newWidth + offsetX - width;
         }
-        if (newHeight + offsetY > pH) {
-            newHeight -= newHeight + offsetY - pH;
+        if (newHeight + offsetY > height) {
+            newHeight -= newHeight + offsetY - height;
         }
 
         for (int y = newY; y < newHeight; y++) {
@@ -309,10 +289,10 @@ public class Renderer {
      * @param offsetY y position on the screen where drawing will start
      * @param font    an instance of {@link Font} which will be used for drawing
      */
-    public void drawText(String text, int offsetX, int offsetY, Font font) {
+    public void drawString(String text, int offsetX, int offsetY, Font font) {
 
         if (font == null)
-            font = Font.STANDARD;
+            font = this.font;
 
         int offset = 0;
 
@@ -369,10 +349,10 @@ public class Renderer {
         if (offsetY < -height) {
             return;
         }
-        if (offsetX >= pW) {
+        if (offsetX >= width) {
             return;
         }
-        if (offsetY >= pH) {
+        if (offsetY >= height) {
             return;
         }
 
@@ -390,11 +370,11 @@ public class Renderer {
         if (offsetY < 0) {
             newY -= offsetY;
         }
-        if (newWidth + offsetX > pW) {
-            newWidth -= newWidth + offsetX - pW;
+        if (newWidth + offsetX > width) {
+            newWidth -= newWidth + offsetX - height;
         }
-        if (newHeight + offsetY > pH) {
-            newHeight -= newHeight + offsetY - pH;
+        if (newHeight + offsetY > width) {
+            newHeight -= newHeight + offsetY - height;
         }
         for (int y = newY; y < newHeight; y++) {
             for (int x = newX; x < newWidth; x++) {
@@ -405,11 +385,25 @@ public class Renderer {
 
 
     //===>>Getters & Setters<<===//
-    public int getzDepth() {
-        return zDepth;
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
-    public void setzDepth(int zDepth) {
-        this.zDepth = zDepth;
+    public void setFont(Font font) {
+        this.font = font;
+    }
+
+    public void setLimits(int limX, int limY, int limW, int limH) {
+        this.limX = limX;
+        this.limY = limY;
+        this.limW = limW;
+        this.limH = limH;
+    }
+
+    public void resetLimit() {
+        limX = 0;
+        limY = 0;
+        limW = width;
+        limH = height;
     }
 }

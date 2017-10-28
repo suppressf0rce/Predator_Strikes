@@ -15,47 +15,61 @@ public class GameWindow {
     private JFrame frame;
     private BufferedImage image;
     private Canvas canvas;
-    private BufferStrategy bs;
-    private Graphics g;
+    private BufferStrategy buffer;
+    private Graphics graphics;
+
+    private String title = "Game Engine";
+    private int width = 640;
+    private int height = 480;
+    private float scale = 2f;
 
     //===>>Constructor<<===//
 
     /**
      * Main constructor for {@link GameWindow}
-     *
-     * @param gc an {@link GameContainer} so we can access the info from game loop
      */
-    public GameWindow(GameContainer gc) {
-        image = new BufferedImage(gc.getWidth(), gc.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        canvas = new Canvas();
-        Dimension s = new Dimension((int) (gc.getWidth() * gc.getScale()), (int) (gc.getHeight() * gc.getScale()));
+    public GameWindow() {
+        //Display Image setup
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-        //Keep canvas the same size
+        //Canvas Setup
+        canvas = new Canvas();
+        Dimension s = new Dimension((int) (width * scale), (int) (height * scale));
         canvas.setPreferredSize(s);
         canvas.setMaximumSize(s);
         canvas.setMinimumSize(s);
 
-        //Setting up JFrame
-        frame = new JFrame(gc.getTitle());
+        //Frame Setup
+        frame = new JFrame(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.add(canvas, BorderLayout.CENTER);
         frame.pack();
-        frame.setLocationRelativeTo(null); //Putting JFrame at the center of screen
-        //SwingUtilities.invokeLater(() -> frame.setResizable(false));
+        frame.setLocationRelativeTo(null);
+        //frame.setResizable(false);
         frame.setVisible(true);
 
-        //Setting up buffer strategy
+        //Buffer Setup
         canvas.createBufferStrategy(2);
-        bs = canvas.getBufferStrategy();
-        g = bs.getDrawGraphics();
+        buffer = canvas.getBufferStrategy();
+        graphics = buffer.getDrawGraphics();
+
+        frame.requestFocus();
+        canvas.requestFocus();
     }
 
 
     //===>Methods<<==//
     void update() {
-        g.drawImage(image, 0, 0, canvas.getWidth(), canvas.getHeight(), null);
-        bs.show();
+        graphics.drawImage(image, 0, 0, canvas.getWidth(), canvas.getHeight(), null);
+        buffer.show();
+    }
+
+    public void dispose() {
+        image.flush();
+        graphics.dispose();
+        buffer.dispose();
+        frame.dispose();
     }
 
     //===>>Getters & Setters<<===//
@@ -70,4 +84,45 @@ public class GameWindow {
     public JFrame getFrame() {
         return frame;
     }
+
+    public Graphics getGraphics() {
+        return graphics;
+    }
+
+    public BufferStrategy getBuffer() {
+        return buffer;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
 }

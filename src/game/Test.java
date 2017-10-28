@@ -1,7 +1,7 @@
 package game;
 
-import engine.AbstractGame;
-import engine.GameContainer;
+import engine.GameEngine;
+import engine.GameState;
 import engine.Renderer;
 import engine.gfx.Image;
 import engine.gfx.ImageTile;
@@ -10,7 +10,7 @@ import engine.sfx.SoundClip;
 import java.awt.event.KeyEvent;
 
 @SuppressWarnings("WeakerAccess")
-public class Test extends AbstractGame {
+public class Test extends GameState {
 
     private Image image;
     private Image image2;
@@ -35,23 +35,23 @@ public class Test extends AbstractGame {
     }
 
     public static void main(String[] args) {
-        GameContainer container = new GameContainer(new Test());
-        container.setWidth(640);
-        container.setHeight(480);
-        container.setTitle("Test Game");
-        container.setCapFps(true);
-        container.start();
+        GameEngine engine = new GameEngine(new Test());
+        engine.start();
     }
 
     @Override
-    public void update(GameContainer gc, float dt) {
-        if (gc.getInput().isKeyDown(KeyEvent.VK_A)) {
+    public void init() {
+    }
+
+    @Override
+    public void update(float dt) {
+        if (GameEngine.getInput().isKeyDown(KeyEvent.VK_A)) {
             runningSFX.loop();
             renderSprite = true;
             renderAlpha = false;
         }
 
-        if (gc.getInput().isKeyDown(KeyEvent.VK_S)) {
+        if (GameEngine.getInput().isKeyDown(KeyEvent.VK_S)) {
             runningSFX.stop();
             renderSprite = false;
             renderAlpha = true;
@@ -70,14 +70,13 @@ public class Test extends AbstractGame {
     }
 
     @Override
-    public void render(GameContainer gc, Renderer r) {
-
+    public void render(Renderer r) {
         r.drawImage(image, 30, 30);
 
         if (renderSprite)
-            r.drawImageTile(sprite, gc.getInput().getMouseX() - 62, gc.getInput().getMouseY() - 62, (int) temp, temp2);
+            r.drawImageTile(sprite, GameEngine.getInput().getMouseX() - 62, GameEngine.getInput().getMouseY() - 62, (int) temp, temp2);
 
         if (renderAlpha)
-            r.drawImage(image2, gc.getInput().getMouseX() - 32, gc.getInput().getMouseY() - 32);
+            r.drawImage(image2, GameEngine.getInput().getMouseX() - 32, GameEngine.getInput().getMouseY() - 32);
     }
 }
