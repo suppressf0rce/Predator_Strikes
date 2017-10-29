@@ -12,9 +12,9 @@ import java.io.IOException;
 public class Image {
 
     //===>>Variables<<===//
-    private int width, height;
-    private int[] pixels;
-    private boolean alpha = false;
+    protected int width, height;
+    protected int[] pixels;
+    protected boolean alpha = false;
 
     //===>>Constructor<<===//
 

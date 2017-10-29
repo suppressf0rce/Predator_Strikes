@@ -343,16 +343,16 @@ public class Renderer {
      */
     public void drawFillRect(int offsetX, int offsetY, int width, int height, int color) {
         //Don't render
-        if (offsetX < -width) {
+        if (offsetX < -this.width) {
             return;
         }
-        if (offsetY < -height) {
+        if (offsetY < -this.height) {
             return;
         }
-        if (offsetX >= width) {
+        if (offsetX >= this.width) {
             return;
         }
-        if (offsetY >= height) {
+        if (offsetY >= this.height) {
             return;
         }
 
@@ -360,6 +360,7 @@ public class Renderer {
         int newY = 0;
         int newWidth = width;
         int newHeight = height;
+
 
         //Render optimization
 
@@ -370,11 +371,11 @@ public class Renderer {
         if (offsetY < 0) {
             newY -= offsetY;
         }
-        if (newWidth + offsetX > width) {
-            newWidth -= newWidth + offsetX - height;
+        if (newWidth + offsetX > this.width) {
+            newWidth -= newWidth + offsetX - this.width;
         }
-        if (newHeight + offsetY > width) {
-            newHeight -= newHeight + offsetY - height;
+        if (newHeight + offsetY > this.height) {
+            newHeight -= newHeight + offsetY - this.height;
         }
         for (int y = newY; y < newHeight; y++) {
             for (int x = newX; x < newWidth; x++) {
