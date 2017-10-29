@@ -3,22 +3,31 @@ package game;
 import engine.GameEngine;
 import engine.GameObject;
 import engine.Renderer;
+import engine.gfx.ImageTile;
 
 @SuppressWarnings("WeakerAccess")
 public class Bullet extends GameObject {
 
     //===>>Variables<<===//
-    private float speed = 800;
+    private float speed = 600;
     private Direction direction;
     private GameObject containedIn;
+    float animationSpeed = 200;
+    float animationTime;
+    private ImageTile image;
 
     //===>>Constructor<<===//
     public Bullet(Direction direction, GameObject containedIn) {
         this.direction = direction;
         this.containedIn = containedIn;
 
-        this.width = 8;
-        this.height = 12;
+        if (direction == Direction.DOWN)
+            image = new ImageTile("res/bullet_down.png", 25, 89);
+        else
+            image = new ImageTile("res/bullet_up.png", 25, 89);
+
+        this.width = image.getTileWidth();
+        this.height = image.getTileHeight();
     }
 
 
@@ -43,10 +52,15 @@ public class Bullet extends GameObject {
             }
         }
 
+        animationTime += dt * animationSpeed;
+        if (animationTime > 3) {
+            animationTime = 0;
+        }
+
     }
 
     @Override
     public void render(Renderer r) {
-        r.drawFillRect((int) posX, (int) posY, width, height, 0xff00ff00);
+        r.drawImageTile(image, (int) posX, (int) posY, (int) animationTime, 0);
     }
 }
