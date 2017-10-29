@@ -4,6 +4,7 @@ import engine.GameEngine;
 import engine.GameObject;
 import engine.Renderer;
 import engine.gfx.ImageTile;
+import engine.sfx.SoundClip;
 
 @SuppressWarnings("WeakerAccess")
 public class Bullet extends GameObject {
@@ -15,6 +16,7 @@ public class Bullet extends GameObject {
     float animationSpeed = 200;
     float animationTime;
     private ImageTile image;
+    private static SoundClip sfx = new SoundClip("res/laser_shot.wav");
 
     //===>>Constructor<<===//
     public Bullet(Direction direction, GameObject containedIn) {
@@ -28,6 +30,9 @@ public class Bullet extends GameObject {
 
         this.width = image.getTileWidth();
         this.height = image.getTileHeight();
+
+        if (direction == Direction.UP)
+            sfx.play();
     }
 
 

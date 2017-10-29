@@ -5,6 +5,7 @@ import engine.GameObject;
 import engine.GameState;
 import engine.Renderer;
 import engine.gfx.Image;
+import engine.sfx.SoundClip;
 
 import java.util.ArrayList;
 
@@ -13,6 +14,7 @@ public class PlayState extends GameState {
     //===>>Variables<<===//
     private Image background;
     private ArrayList<GameObject> objects = new ArrayList<>();
+    private SoundClip backgroundMusic;
 
 
     //===>>Methods<<===//
@@ -27,6 +29,9 @@ public class PlayState extends GameState {
         Player player = new Player(this);
         objects.add(player);
 
+        backgroundMusic = new SoundClip("res/Inverse Phase - Propane NESmares (8-bit remix).wav");
+        backgroundMusic.setVolume(-20);
+        backgroundMusic.loop();
     }
 
     @Override

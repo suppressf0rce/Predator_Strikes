@@ -83,6 +83,8 @@ public class SoundClip {
     public void stop() {
         if (clip.isRunning())
             clip.stop();
+
+        clip.setFramePosition(0);
     }
 
     /**
