@@ -12,7 +12,7 @@ public class Player extends GameObject {
 
     //===>>Variables<<===//
     private float speed = 500;
-    private float fireSpeed = 8;
+    private float fireSpeed = 6;
 
     private GameState state;
     private float fireTime = 0;
@@ -53,7 +53,7 @@ public class Player extends GameObject {
             if (GameEngine.getInput().isKeyDown(KeyEvent.VK_SPACE)) {
                 Bullet bullet = new Bullet(Direction.UP, this);
                 bullet.setPosX(posX + width / 2 - bullet.getWidth() / 2);
-                bullet.setPosY(posY);
+                bullet.setPosY(posY - bullet.getHeight() + 15);
                 objects.add(bullet);
                 fireTime = 0;
             }
