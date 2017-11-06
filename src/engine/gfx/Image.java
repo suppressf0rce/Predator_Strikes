@@ -79,4 +79,8 @@ public class Image {
     public void setAlpha(boolean alpha) {
         this.alpha = alpha;
     }
+
+    public void setPixel(int pos, int value) {
+        pixels[pos] = value;
+    }
 }

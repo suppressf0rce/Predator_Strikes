@@ -219,6 +219,40 @@ public class Renderer {
         }
     }
 
+    public void drawBackground(Image image) {
+        // dimensions of the background
+        int width = image.getWidth();
+        int height = image.getHeight();
+        // all pixels of the last row
+        int row_pixels[] = new int[width];
+
+        for (int y = height - 1; y >= 0; y--) {
+            for (int x = width - 1; x >= 0; x--) {
+
+                // rgb value of the pixel
+                int pixelValue;
+                // if it's the last row
+                if (y == height - 1) {
+
+                    pixelValue = image.getPixels()[x + y * width];
+                    row_pixels[x] = pixelValue;
+                }
+                // taking pixels of the lesser row
+                pixelValue = image.getPixels()[x + (y - 1) * width];
+
+                image.setPixel(x + y * width, pixelValue);
+
+                //Calling set pixel method
+                setPixel(x, y, pixelValue);
+            }
+        }
+
+        for (int x = 0; x < width; x++) {
+            image.setPixel(x, row_pixels[x]);
+            setPixel(x, 0, row_pixels[x]);
+        }
+    }
+
     /**
      * This method draws the single tile / sprite from {@link ImageTile}
      *

@@ -49,8 +49,8 @@ public class PlayState extends GameState {
 
     @Override
     public void render(Renderer r) {
-        r.drawImage(background, 0, 0);
-
+        //r.drawImage(background, 0, 0);
+        r.drawBackground(background);
         for (GameObject obj : objects) {
             obj.render(r);
         }
