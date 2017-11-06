@@ -226,8 +226,8 @@ public class Renderer {
         // all pixels of the last row
         int row_pixels[] = new int[width];
 
-        for (int y = height - 1; y >= 0; y--) {
-            for (int x = width - 1; x >= 0; x--) {
+        for (int y = height - 1; y > 0; y--) {
+            for (int x = width - 1; x > 0; x--) {
 
                 // rgb value of the pixel
                 int pixelValue;

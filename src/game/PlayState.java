@@ -23,7 +23,7 @@ public class PlayState extends GameState {
         GameEngine.setDebug(true);
 
         //Initialization of the background
-        background = new Image("res/background.jpg");
+        background = new Image("res/bgd.png");
 
         //Initialization of the player
         Player player = new Player(this);
