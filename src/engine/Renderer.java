@@ -367,6 +367,27 @@ public class Renderer {
     }
 
     /**
+     * This method draws a colored circle on  the screen.
+     *
+     * @param centerX X position that represents the center of the circle
+     * @param centerY Y position that represents the center of the circle
+     * @param radius  Radius which represents the diameter of the circle
+     * @param color   Value that the circle will be colored in.
+     */
+    public void drawCircle(int centerX, int centerY, int radius, int color) {
+        for (int y = 0; y < this.height; y++) {
+            for (int x = 0; x < this.width; x++) {
+                int dx = centerX - x;
+                int dy = centerY - y;
+                int distance = (int) Math.sqrt(dx * dx + dy * dy);
+
+                if (distance <= radius) {
+                    setPixel(x, y, color);
+                }
+            }
+        }
+    }
+    /**
      * This method draws an filled rectangle on the screen
      *
      * @param offsetX an x position where rectangle will begin its drawing

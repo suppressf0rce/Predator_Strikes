@@ -16,7 +16,6 @@ public class PlayState extends GameState {
     private ArrayList<GameObject> objects = new ArrayList<>();
     private SoundClip backgroundMusic;
 
-
     //===>>Methods<<===//
     @Override
     public void init() {
@@ -49,8 +48,8 @@ public class PlayState extends GameState {
 
     @Override
     public void render(Renderer r) {
-        //r.drawImage(background, 0, 0);
         r.drawBackground(background);
+
         for (GameObject obj : objects) {
             obj.render(r);
         }
