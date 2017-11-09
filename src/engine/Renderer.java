@@ -387,6 +387,7 @@ public class Renderer {
             }
         }
     }
+
     /**
      * This method draws an filled rectangle on the screen
      *

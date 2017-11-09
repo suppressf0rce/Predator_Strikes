@@ -13,8 +13,11 @@ public class PlayState extends GameState {
 
     //===>>Variables<<===//
     private Image background;
+    private ScrollingRandomBackground srb;
     private ArrayList<GameObject> objects = new ArrayList<>();
     private SoundClip backgroundMusic;
+
+    private float tmp = 0;
 
     //===>>Methods<<===//
     @Override
@@ -23,6 +26,7 @@ public class PlayState extends GameState {
 
         //Initialization of the background
         background = new Image("res/bgd.png");
+        srb = new ScrollingRandomBackground(background);
 
         //Initialization of the player
         Player player = new Player(this);
@@ -30,7 +34,7 @@ public class PlayState extends GameState {
 
         backgroundMusic = new SoundClip("res/Inverse Phase - Propane NESmares (8-bit remix).wav");
         backgroundMusic.setVolume(-20);
-        backgroundMusic.loop();
+        //backgroundMusic.loop();
     }
 
     @Override
@@ -44,12 +48,19 @@ public class PlayState extends GameState {
                 i--;
             }
         }
+
+        tmp += dt;
     }
 
     @Override
     public void render(Renderer r) {
-        r.drawBackground(background);
+        if (tmp > 0.05) {
+            r.drawBackground(background);
+            tmp = 0;
+        }
 
+        srb.scroll();
+        //r.drawImage(background,0,0);
         for (GameObject obj : objects) {
             obj.render(r);
         }
