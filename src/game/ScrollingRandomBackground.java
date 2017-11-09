@@ -1,13 +1,12 @@
 package game;
 
-import engine.GameEngine;
 import engine.gfx.Image;
+import engine.gfx.ScrollableImage;
 
-import java.awt.*;
 import java.util.Random;
 
 @SuppressWarnings({"ManualArrayCopy", "WeakerAccess"})
-public class ScrollingRandomBackground {
+public class ScrollingRandomBackground extends ScrollableImage {
     private Image background;
 
     private int particle_grid[][];
@@ -16,6 +15,7 @@ public class ScrollingRandomBackground {
     private Random rand;
 
     public ScrollingRandomBackground(Image background) {
+        super(background);
         this.background = background;
 
         particle_grid = new int[background.getHeight()][background.getWidth()];
@@ -24,9 +24,10 @@ public class ScrollingRandomBackground {
         rand = new Random();
     }
 
+    @Override
     public void scroll() {
 
-        int c = rand.nextInt(2);
+        int c = rand.nextInt(4);
         int counter = 0;
         // 50% chance to generate a new row, exiting if the chance failed
         if (c == 1) {
@@ -64,26 +65,10 @@ public class ScrollingRandomBackground {
         for (int i = 0; i < background.getWidth(); i++) {
             particle_grid[0][i] = particle_row[i];
         }
-
-
-        drawParticles();
     }
 
-    private void drawParticles() {
-
-        for (int y = 0; y < background.getHeight(); y++) {
-            for (int x = 0; x < background.getWidth(); x++) {
-                if (particle_grid[y][x] == 5) {
-                    Color c = new Color(255, 0, 0);
-                    int rgb = c.getRGB();
-                    GameEngine.getRenderer().setPixel(x, y, rgb);
-
-                    //if(y>1 && )
-                }
-            }
-        }
-
-
+    public int[][] getParticle_grid() {
+        return particle_grid;
     }
 
     public void printMatrix() {

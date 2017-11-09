@@ -1,7 +1,7 @@
 package game;
 
 import engine.*;
-import engine.gfx.Image;
+import engine.gfx.ScrollableImage;
 import engine.gfx.Transition;
 import engine.gfx.Transition.TransitionType;
 import engine.sfx.SoundClip;
@@ -9,15 +9,17 @@ import engine.sfx.SoundClip;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+@SuppressWarnings("WeakerAccess")
 public class PlayState extends GameState {
 
     //===>>Variables<<===//
-    private Image background;
-    private ScrollingRandomBackground srb;
+    private ScrollableImage background;
+    private ScrollingRandomBackground stars;
     private ArrayList<GameObject> objects = new ArrayList<>();
     private SoundClip backgroundMusic;
 
     private float tmp = 0;
+
     public PlayState(GameHost host) {
         super("play", host);
 
@@ -25,8 +27,8 @@ public class PlayState extends GameState {
         GameEngine.setDebug(true);
 
         //Initialization of the background
-        background = new Image("res/bgd.png");
-        srb = new ScrollingRandomBackground(background);
+        background = new ScrollableImage("res/bgd.png");
+        stars = new ScrollingRandomBackground(background);
 
         //Initialization of the player
         Player player = new Player(this);
@@ -52,6 +54,11 @@ public class PlayState extends GameState {
         }
 
         tmp += dt;
+        if (tmp > 0.05) {
+            tmp = 0;
+            background.scroll();
+        }
+        stars.scroll();
 
         if (GameEngine.getInput().isKeyDown(KeyEvent.VK_ESCAPE)) {
             TransitionType transType = TransitionType.values()[(int) (Math.random() * TransitionType.values().length)];
@@ -62,13 +69,9 @@ public class PlayState extends GameState {
 
     @Override
     public void render(Renderer r) {
-        if (tmp > 0.05) {
-            r.drawBackground(background);
-            tmp = 0;
-        }
-
-        srb.scroll();
-        //r.drawImage(background,0,0);
+        stars.scroll();
+        r.drawImage(background, 0, 0);
+        r.drawParticles(stars, stars.getParticle_grid());
         for (GameObject obj : objects) {
             obj.render(r);
         }

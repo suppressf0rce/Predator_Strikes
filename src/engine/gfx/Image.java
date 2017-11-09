@@ -43,6 +43,12 @@ public class Image {
         }
     }
 
+    public Image(Image image) {
+        width = image.getWidth();
+        height = image.getHeight();
+        pixels = image.getPixels();
+    }
+
     public Image(BufferedImage image) {
 
         this.image = image;
