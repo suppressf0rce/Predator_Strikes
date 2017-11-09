@@ -6,22 +6,21 @@ import java.util.HashMap;
 import java.util.Properties;
 
 /**
- * Glavni objekat za složenije aplikacije, koje će imati više odvojenih stanja. Treba ga
- * instancirati samo jednom, ovaj objekat je vlasnik prozora i preko njega se postavlja
- * trenutno aktivno stanje, koje će onda da bude pozivano za ažuriranje i iscrtavanje, te
- * će samo ono dobijati input događaje.
+ * Main object for complex application, which will have more different states.
+ * Needs to be usually instanced once, this object is owner of all states.
+ * It can freely change the active states, which will then user for the drawing.
  *
  * @author Aleksandar
  */
 public class GameHost {
 
     static {
-//        System.setProperty("sun.java2d.transaccel", "True");
-//        System.setProperty("sun.java2d.opengl", "true");
-//        System.setProperty("sun.java2d.ddforcevram", "True");
+        System.setProperty("sun.java2d.transaccel", "True");
+        //   System.setProperty("sun.java2d.opengl", "True");
+        System.setProperty("sun.java2d.ddforcevram", "True");
     }
 
-    private Color backColor = Color.blue;
+    private Color backColor = Color.BLACK;
     private boolean clearBackBuffer = true;
 
     private GameState currentState = null;
@@ -31,19 +30,19 @@ public class GameHost {
 
 
     /**
-     * Vraća prijavljene GameState objekte po nazivu
+     * Returns registered states by the name
      *
-     * @param name naziv koji traženi GameState daje u getName() pozivu
-     * @return referenca na GameState ako je nađen, ili null ako nije
+     * @param name name which asked state returns with GameState.getName() function
+     * @return reference to state if its found null if its not
      */
     public GameState getState(String name) {
         return states.get(name);
     }
 
     /**
-     * Prelazak na novo stanje, po referenci
+     * Changing to the next state by the reference
      *
-     * @param nextState referenca na GameState objekat, trebao bi biti jedan od prijavljenih
+     * @param nextState reference to the GameState object, which needs to be registered
      */
     public void setState(GameState nextState) {
         if (nextState == null) return;
@@ -53,38 +52,38 @@ public class GameHost {
     }
 
     /**
-     * Prelazak na novo stanje, po nazivu
+     * Changing the next state by the name
      *
-     * @param stateName naziv stanja, kako ga vraća njegova getName() metoda
+     * @param stateName name of the state
      */
     public void setState(String stateName) {
         setState(getStateByName(stateName));
     }
 
     /**
-     * Referenca na trenutno aktivno stanje
+     * Reference to the current active state
      *
-     * @return referenca na GameState objekat
+     * @return reference to the {@link GameState} object
      */
     public GameState getCurrentState() {
         return currentState;
     }
 
     /**
-     * Traženje reference na bilo koje od trneutno prijavljenih stanja
+     * Searching for reference to any of the registered states
      *
-     * @param name naziv stanja, kako ga vraća njegova getName() metoda
-     * @return referenca ako je stanje pronađeno, null ako nije
+     * @param name name of the state, how it returns his getName() method
+     * @return reference to the object, or null if its not found
      */
     public GameState getStateByName(String name) {
         return states.get(name);
     }
 
     /**
-     * Prijavljuje stanje na ovaj Host, ovo *ne bi trebalo ručno raditi*, jer
-     * se prijavljivanje radi u konstruktoru stanja.
+     * Registering state to this host (* shouldn't be done manually *)
+     * Registering is being done in constructor of the state
      *
-     * @param state referenca na stanje koje se registruje
+     * @param state reference to the state which is being registered
      */
     public void registerState(GameState state) {
         if (state == null)
@@ -124,7 +123,6 @@ public class GameHost {
             currentState = nextState;
             nextState = null;
 
-            currentState.init();
             currentState.resumeState();
         }
 
@@ -132,14 +130,13 @@ public class GameHost {
 
 
     /**
-     * Metod koji će da iscrta zadato stanje, ali u off-screen sliku, umjesto na ekran.
-     * Obratiti pažnju da se ovo ne pozove iz render() metode istog stanja, jer bi to
-     * izazvalo beskonačnu rekurziju.
+     * Method which will draw current state, but in the off-screen image, instead of the screen.
+     * Notice: try not to call this method from render() of the same state as it will cause infinite loop
+
      *
-     * @param canvas objekat slike u koju će se crtati, može biti null, pa će nova slika biti alocirana;
-     *               ako se ovo radi često, bolje je imati jednu unaprijed alociranu sliku koja će se reciklirati.
-     * @param state  stanje koje se treba iscrtati, biće pozvan njegov render() metod
-     * @return vraća referencu na proslijeđenu ili novokonstruisanu sliku, u koju je iscrtano stanje
+     * @param canvas Object of the picture that will be drawn on the screen, can be null
+     * @param state  state that needs to be drawn, his render method will be called
+     * @return returns the reference to the newly created buffered image
      */
     public BufferedImage renderSnapshot(BufferedImage canvas, GameState state) {
         if (canvas == null)
@@ -154,7 +151,7 @@ public class GameHost {
 
 
         Renderer r = new Renderer();
-        r.setPixels(((DataBufferInt) canvas.getRaster().getDataBuffer()).getData());
+        r.setPixels(canvas.getRGB(0, 0, GameEngine.getWindow().getWidth(), GameEngine.getWindow().getHeight(), null, 0, GameEngine.getWindow().getWidth()));
 
         if (state != null)
             state.render(r);
@@ -177,4 +174,7 @@ public class GameHost {
         return new BufferedImage(colorModel, raster, colorModel.isAlphaPremultiplied(), new Properties());
     }
 
+    public void setClearBackBuffer(boolean clearBackBuffer) {
+        this.clearBackBuffer = clearBackBuffer;
+    }
 }

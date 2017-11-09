@@ -16,8 +16,6 @@ public abstract class GameState {
                 host.registerState(this);
         }
 
-        public abstract void init();
-
         public abstract void update(float dt);
 
         public abstract void render(Renderer r);
@@ -27,10 +25,10 @@ public abstract class GameState {
         public abstract void resumeState();
 
         /**
-         * Omotač za renderSnapshot poziv GameHost objekta, iscrtava trenutno stanje u off-screen sliku
+         * Cover for the renderSnapshot call of {@link GameHost} object, draws current state in offscreen image
          *
-         * @param canvas - slika u koju treba da se renderuje
-         * @return - referenca na istu sliku
+         * @param canvas - Image that needs to be drawn in renderer
+         * @return - reference to the newly picture that will be drawn
          */
         public BufferedImage renderSnapshot(BufferedImage canvas) {
                 return host.renderSnapshot(canvas, this);

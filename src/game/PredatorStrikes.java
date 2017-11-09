@@ -15,7 +15,7 @@ public class PredatorStrikes {
         new Transition(host);
         new PauseState(host);
 
-        host.setState("play");
+        host.setState("pause");
 
         engine.start();
     }

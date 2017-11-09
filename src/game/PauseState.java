@@ -7,20 +7,18 @@ import engine.Renderer;
 import engine.gfx.Image;
 import engine.gfx.Transition;
 import engine.gfx.Transition.TransitionType;
+import engine.sfx.SoundClip;
 
 import java.awt.event.KeyEvent;
 
 public class PauseState extends GameState {
 
     Image bg = new Image("res/bgd.png");
+    private SoundClip backgroundMusic;
 
     public PauseState(GameHost host) {
         super("pause", host);
-    }
-
-    @Override
-    public void init() {
-
+        backgroundMusic = new SoundClip("res/Pendulum - Granite (8 bit remix).wav");
     }
 
     @Override
@@ -40,11 +38,11 @@ public class PauseState extends GameState {
 
     @Override
     public void suspendState() {
-
+        backgroundMusic.stop();
     }
 
     @Override
     public void resumeState() {
-
+        backgroundMusic.loop();
     }
 }

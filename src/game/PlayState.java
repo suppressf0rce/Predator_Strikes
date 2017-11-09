@@ -18,12 +18,8 @@ public class PlayState extends GameState {
 
     public PlayState(GameHost host) {
         super("play", host);
-    }
 
 
-    //===>>Methods<<===//
-    @Override
-    public void init() {
         GameEngine.setDebug(true);
 
         //Initialization of the background
@@ -35,8 +31,10 @@ public class PlayState extends GameState {
 
         backgroundMusic = new SoundClip("res/Inverse Phase - Propane NESmares (8-bit remix).wav");
         backgroundMusic.setVolume(-10);
-        backgroundMusic.loop();
     }
+
+
+    //===>>Methods<<===//
 
     @Override
     public void update(float dt) {

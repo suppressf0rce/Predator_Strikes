@@ -63,9 +63,9 @@ public class Transition extends GameState {
         // Asking next state to be drawn into end image
         instance.endImage = instance.nextState.renderSnapshot(instance.endImage);
 
-        // I sada prelazimo u stanje tranzicije, sto znaci da se azuriranja
-        // i iscrtavanja obavljaju samo u ovom stanju, dokle god ne prepustimo
-        // kontrolu sljedecem stanju (sto se desava kada position stigne do 1).
+        // And now we are switching to the transition phase which means that it updates itself
+        // And drawing is being made only in this state, until we pass the
+        // control to other state (which happens when the position hits the 1)
         instance.host.setState(instance);
     }
 
@@ -76,22 +76,18 @@ public class Transition extends GameState {
 
     @Override
     public void resumeState() {
-        // Neke vrste tranzicija ce otrkiti pozadinu, pa je postavljamo na crno
+        // Some of the transitions will remove the background so we are setting it to black
         GameEngine.getRenderer().setClearBackground(true);
+        GameEngine.getHost().setClearBackBuffer(true);
     }
 
     @Override
     public void suspendState() {
         GameEngine.getRenderer().setClearBackground(false);
+        GameEngine.getHost().setClearBackBuffer(false);
     }
 
     public void renderAnimation(Graphics2D g) {
-        // Radi sto cisce i jednostavnije implementacije, ne koristimo nikakve dodatne
-        // promjenjive stanja, vec sve animacije tranzicije pisemo kao funkcije promjenjive
-        // position, tj. ovdje na licu mjesta izracunavamo sve pozicije i velicine oslanjajuci
-        // se samo na tu promjenjivu. Eventualne dodatne tranzicije bi bilo dobro implementirati
-        // na isti nacin, kako bi se zadrzala jednostavnost.
-
         switch (type) {
             case Crossfade:
                 // Starting picture is being drawn totally visible
@@ -103,6 +99,8 @@ public class Transition extends GameState {
                 break;
 
             case SwipeLeft:
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, GameEngine.getWindow().getWidth(), GameEngine.getWindow().getHeight());
                 // Starting picture is becoming smaller and starts to move left getting out of the screen
                 g.drawImage(startImage,
                         (int) (0 - position * (GameEngine.getWindow().getWidth())),
@@ -121,6 +119,8 @@ public class Transition extends GameState {
                 break;
 
             case SwipeRight:
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, GameEngine.getWindow().getWidth(), GameEngine.getWindow().getHeight());
                 g.drawImage(startImage,
                         (int) (0 + position * (GameEngine.getWindow().getWidth())),
                         (int) (position * GameEngine.getWindow().getHeight() * 0.25f),
@@ -167,11 +167,6 @@ public class Transition extends GameState {
     }
 
     @Override
-    public void init() {
-
-    }
-
-    @Override
     public void update(float dt) {
         // In every step incrementing position for the speed value
         position += speed;
@@ -189,8 +184,6 @@ public class Transition extends GameState {
     @Override
     public void render(Renderer r) {
         Graphics2D g = (Graphics2D) imgToRender.getGraphics();
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, GameEngine.getWindow().getWidth(), GameEngine.getWindow().getHeight());
         renderAnimation(g);
 
         r.drawImage(new Image(imgToRender), 0, 0);
