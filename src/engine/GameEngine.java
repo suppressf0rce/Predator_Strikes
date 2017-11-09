@@ -23,21 +23,19 @@ public class GameEngine implements Runnable {
     private static GameWindow window;
     private static Renderer renderer;
     private static Input input;
-    private static GameState state;
+    private static GameHost host;
 
+    private static int FPS = 60;
     private static volatile boolean running = false; //Control the games main loop
-    private static double FRAME_CAP = 1.0 / 60.0;    //Time frame for 60 frames every one second.
+    private static double FRAME_CAP = 1.0 / FPS;    //Time frame for 60 frames every one second.
     private static boolean debug = false;
 
 
-
-    //===>>Constructor<<===//
-    /**
-     * Global constructor for {@link GameEngine}
-     * @param state an instance of {@link GameState} that tells on which state game is
-     */
-    public GameEngine(GameState state) {
-        GameEngine.state = state;
+    public GameEngine(GameHost gameHost) {
+        window = new GameWindow();
+        renderer = new Renderer();
+        input = new Input();
+        host = gameHost;
     }
 
     //===>>Getters & Setters<<====//
@@ -57,8 +55,8 @@ public class GameEngine implements Runnable {
         return input;
     }
 
-    public static GameState getState() {
-        return state;
+    public static GameHost getHost() {
+        return host;
     }
 
     public static void setDebug(boolean debug) {
@@ -68,16 +66,20 @@ public class GameEngine implements Runnable {
     //===>>Methods<<===//
     public void start() {
 
-        window = new GameWindow();
-        renderer = new Renderer();
-        input = new Input();
-
         Thread thread = new Thread(this);
         thread.run();
     }
 
     public void stop() {
         running = false;
+    }
+
+    public static int getFPS() {
+        return FPS;
+    }
+
+    public void cleanUp() {
+        window.dispose();
     }
 
     @Override
@@ -94,7 +96,7 @@ public class GameEngine implements Runnable {
         int frames = 0;
         int fps = 0;
 
-        state.init();
+        host.initCurrentState();
 
         while (running) {
             render = false;
@@ -113,7 +115,7 @@ public class GameEngine implements Runnable {
                     debug = !debug;
                 }
 
-                state.update((float) FRAME_CAP);
+                host.tick((float) FRAME_CAP);
                 input.update();
 
                 if (frameTime >= 1.0) {
@@ -124,8 +126,11 @@ public class GameEngine implements Runnable {
             }
 
             if (render) {
-                renderer.clear();
-                state.render(renderer);
+                if (renderer.isClearBackground())
+                    renderer.clearBackground();
+                else
+                    renderer.clear();
+                host.render(renderer);
                 if (debug)
                     renderer.drawString("FPS: " + fps, 0xffffffff, 0, null);
 
@@ -141,9 +146,5 @@ public class GameEngine implements Runnable {
         }
 
         cleanUp();
-    }
-
-    public void cleanUp() {
-        window.dispose();
     }
 }

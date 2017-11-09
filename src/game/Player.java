@@ -130,6 +130,8 @@ public class Player extends GameObject {
             animX = numberOfTileX;
         if ((int) animY > numberOfTileY)
             animY = numberOfTileY;
+
+        //System.out.println("Tile X:"+(int)animX+ " Tile Y:"+(int)animY);
     }
 
     @Override

@@ -6,6 +6,7 @@ import engine.Renderer;
 import engine.gfx.ImageTile;
 import engine.sfx.SoundClip;
 
+
 @SuppressWarnings("WeakerAccess")
 public class Bullet extends GameObject {
 
@@ -20,6 +21,9 @@ public class Bullet extends GameObject {
 
     //===>>Constructor<<===//
     public Bullet(Direction direction, GameObject containedIn) {
+
+        tag = "bullet";
+
         this.direction = direction;
         this.containedIn = containedIn;
 
@@ -44,6 +48,7 @@ public class Bullet extends GameObject {
             case UP: {
                 posY -= speed * dt;
                 if (posY < 0) {
+                    setDead(true);
                     containedIn.getObjects().remove(this);
                 }
                 break;
@@ -51,6 +56,7 @@ public class Bullet extends GameObject {
             case DOWN: {
                 posY += speed * dt;
                 if (posY > GameEngine.getWindow().getHeight()) {
+                    setDead(true);
                     containedIn.getObjects().remove(this);
                 }
                 break;

@@ -1,12 +1,12 @@
 package game;
 
-import engine.GameEngine;
-import engine.GameObject;
-import engine.GameState;
-import engine.Renderer;
+import engine.*;
 import engine.gfx.Image;
+import engine.gfx.Transition;
+import engine.gfx.Transition.TransitionType;
 import engine.sfx.SoundClip;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class PlayState extends GameState {
@@ -18,10 +18,10 @@ public class PlayState extends GameState {
     private SoundClip backgroundMusic;
 
     private float tmp = 0;
+    public PlayState(GameHost host) {
+        super("play", host);
 
-    //===>>Methods<<===//
-    @Override
-    public void init() {
+
         GameEngine.setDebug(true);
 
         //Initialization of the background
@@ -33,9 +33,11 @@ public class PlayState extends GameState {
         objects.add(player);
 
         backgroundMusic = new SoundClip("res/Inverse Phase - Propane NESmares (8-bit remix).wav");
-        backgroundMusic.setVolume(-20);
-        //backgroundMusic.loop();
+        backgroundMusic.setVolume(-10);
     }
+
+
+    //===>>Methods<<===//
 
     @Override
     public void update(float dt) {
@@ -50,6 +52,12 @@ public class PlayState extends GameState {
         }
 
         tmp += dt;
+
+        if (GameEngine.getInput().isKeyDown(KeyEvent.VK_ESCAPE)) {
+            TransitionType transType = TransitionType.values()[(int) (Math.random() * TransitionType.values().length)];
+
+            Transition.transitionTo("pause", transType, 0.5f);
+        }
     }
 
     @Override
@@ -64,6 +72,16 @@ public class PlayState extends GameState {
         for (GameObject obj : objects) {
             obj.render(r);
         }
+    }
+
+    @Override
+    public void suspendState() {
+        backgroundMusic.stop();
+    }
+
+    @Override
+    public void resumeState() {
+        backgroundMusic.loop();
     }
 
 

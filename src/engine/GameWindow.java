@@ -18,7 +18,7 @@ public class GameWindow {
     private BufferStrategy buffer;
     private Graphics graphics;
 
-    private String title = "Game Engine";
+    private String title = "Predator Strikes";
     private int width = 1024;
     private int height = 720;
     private float scale = 1f;
