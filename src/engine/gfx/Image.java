@@ -16,6 +16,8 @@ public class Image {
     protected int[] pixels;
     protected boolean alpha = false;
 
+    protected BufferedImage image;
+
     //===>>Constructor<<===//
 
     /**
@@ -39,6 +41,15 @@ public class Image {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Image(BufferedImage image) {
+
+        this.image = image;
+
+        width = image.getWidth();
+        height = image.getHeight();
+        pixels = image.getRGB(0, 0, width, height, null, 0, width);
     }
 
     public Image(int[] pixels, int width, int height) {
@@ -82,5 +93,9 @@ public class Image {
 
     public void setPixel(int pos, int value) {
         pixels[pos] = value;
+    }
+
+    public BufferedImage getImage() {
+        return image;
     }
 }

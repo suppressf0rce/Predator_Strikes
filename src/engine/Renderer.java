@@ -31,6 +31,7 @@ public class Renderer {
 
     private int[] lightMap;
 
+    private boolean clearBackground = false;
     //===>Constructor<<===//
 
     /**
@@ -59,6 +60,16 @@ public class Renderer {
     public void clear() {
         for (int i = 0; i < pixels.length; i++) {
             //pixels[i] = 0xff000000; //Alpha 255, R 0, G 0, B 0
+            depthBuffer[i] = 0;
+        }
+    }
+
+    /**
+     * This method clears the buffer
+     */
+    public void clearBackground() {
+        for (int i = 0; i < pixels.length; i++) {
+            pixels[i] = 0xff000000; //Alpha 255, R 0, G 0, B 0
             depthBuffer[i] = 0;
         }
     }
@@ -440,5 +451,21 @@ public class Renderer {
         limY = 0;
         limW = width;
         limH = height;
+    }
+
+    public boolean isClearBackground() {
+        return clearBackground;
+    }
+
+    public void setClearBackground(boolean clearBackground) {
+        this.clearBackground = clearBackground;
+    }
+
+    public int[] getPixels() {
+        return pixels;
+    }
+
+    public void setPixels(int[] pixels) {
+        this.pixels = pixels;
     }
 }
