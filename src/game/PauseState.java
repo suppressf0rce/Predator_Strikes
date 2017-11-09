@@ -26,7 +26,7 @@ public class PauseState extends GameState {
     private int planetY = 250;
     private float planetTile = 0;
     private int planetTile1 = 0;
-    private int planetAnimationSpeed = 10;
+    private int planetAnimationSpeed = 15;
 
     private String selectedItem = null;
 
