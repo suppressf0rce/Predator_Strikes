@@ -77,6 +77,27 @@ public class SoundClip {
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
+    private void play(boolean loop) {
+        if (clip == null) {
+            return;
+        }
+
+        //We want to stop clip if its already running
+        stop();
+
+        //Set clip play position to beginning
+        clip.setFramePosition(0);
+
+        //Keep starting the clip because sometimes it doesn't start at first time
+        while (!clip.isRunning()) {
+            if (loop)
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            else
+                clip.start();
+        }
+    }
+
     /**
      * Stops sound clip from the playing
      */
@@ -102,8 +123,7 @@ public class SoundClip {
      * Plays sound clip but in the forever loop
      */
     public void loop() {
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
-        play();
+        play(true);
     }
 
 
