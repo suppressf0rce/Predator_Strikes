@@ -50,16 +50,27 @@ public class PauseState extends GameState {
     public void update(float dt) {
 
         if (GameEngine.getInput().isKeyDown(KeyEvent.VK_DOWN) && selectedItem.equals("play")) {
-            selectedItem = "quit";
+            selectedItem = "highscores";
             planetY = 325;
+            planetX -= 120;
+            menuEffect.play();
+        } else if (GameEngine.getInput().isKeyDown(KeyEvent.VK_DOWN) && selectedItem.equals("highscores")) {
+            selectedItem = "quit";
+            planetY = 400;
+            planetX += 120;
+            menuEffect.play();
+        } else if (GameEngine.getInput().isKeyDown(KeyEvent.VK_UP) && selectedItem.equals("quit")) {
+            selectedItem = "highscores";
+            planetY = 325;
+            planetX -= 120;
+            menuEffect.play();
+        } else if (GameEngine.getInput().isKeyDown(KeyEvent.VK_UP) && selectedItem.equals("highscores")) {
+            selectedItem = "play";
+            planetY = 250;
+            planetX += 120;
             menuEffect.play();
         }
 
-        if (GameEngine.getInput().isKeyDown(KeyEvent.VK_UP) && selectedItem.equals("quit")) {
-            selectedItem = "play";
-            planetY = 250;
-            menuEffect.play();
-        }
 
         if (GameEngine.getInput().isKeyDown(KeyEvent.VK_ENTER)) {
             if (selectedItem.equals("quit"))
@@ -99,12 +110,19 @@ public class PauseState extends GameState {
         r.drawString("Play", GameEngine.getWindow().getWidth() / 2 - 60, 250, activeFont);
 
 
+        if (selectedItem.equals("highscores")) {
+            activeFont = fontSelected;
+        } else {
+            activeFont = font;
+        }
+        r.drawString("High scores", GameEngine.getWindow().getWidth() / 2 - 180, 325, activeFont);
+
         if (selectedItem.equals("quit")) {
             activeFont = fontSelected;
         } else {
             activeFont = font;
         }
-        r.drawString("Quit", GameEngine.getWindow().getWidth() / 2 - 60, 325, activeFont);
+        r.drawString("Quit", GameEngine.getWindow().getWidth() / 2 - 60, 400, activeFont);
 
         r.drawImageTile(planet, planetX, planetY, (int) planetTile, planetTile1);
     }
