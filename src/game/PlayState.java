@@ -23,9 +23,6 @@ public class PlayState extends GameState {
     public PlayState(GameHost host) {
         super("play", host);
 
-
-        GameEngine.setDebug(true);
-
         //Initialization of the background
         background = new ScrollableImage("res/bgd.png");
         stars = new ScrollingRandomBackground(background);

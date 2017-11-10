@@ -80,6 +80,11 @@ public class PauseState extends GameState {
                 TransitionType transType = TransitionType.values()[(int) (Math.random() * TransitionType.values().length)];
                 Transition.transitionTo("play", transType, 0.5f);
             }
+
+            if (selectedItem.equals("highscores")) {
+                TransitionType transType = TransitionType.values()[(int) (Math.random() * TransitionType.values().length)];
+                Transition.transitionTo("highscore", transType, 0.5f);
+            }
         }
 
         planetTile += dt * planetAnimationSpeed;
@@ -136,6 +141,8 @@ public class PauseState extends GameState {
     public void resumeState() {
         backgroundMusic.loop();
         selectedItem = "play";
+        planetX = GameEngine.getWindow().getWidth() / 2 - 150;
+        planetY = 250;
         activeFont = fontSelected;
     }
 }
