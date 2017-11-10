@@ -44,6 +44,8 @@ public class PlayState extends GameState {
 
     @Override
     public void update(float dt) {
+        checkForCollisions();
+
         // spawning enemies
         Random rand = new Random();
         int r = rand.nextInt(100);
@@ -93,6 +95,48 @@ public class PlayState extends GameState {
         }
     }
 
+    public void checkForCollisions() {
+        GameObject player = null;
+        // looking for the player object
+        for (GameObject go : objects) {
+            if (go.getTag().equals("player")) {
+                player = go;
+
+            }
+        }
+
+        float b_x1, b_x2, b_y1, b_y2;
+        float e_x1, e_x2, e_y1, e_y2;
+        // checking for bullet collision
+        for (GameObject go : objects) {
+            if (go.getTag().equals("enemy")) {
+
+                for (GameObject bullet : player.getObjects()) {
+
+
+                    b_x1 = bullet.getPosX();
+                    b_x2 = b_x1 + bullet.getWidth();
+
+                    b_y1 = bullet.getPosY();
+                    b_y2 = b_y1 + bullet.getHeight();
+
+                    e_x1 = go.getPosX();
+                    e_x2 = e_x1 + go.getWidth();
+
+                    e_y1 = go.getPosY();
+                    e_y2 = e_y1 + go.getHeight();
+
+
+                    if (e_x1 > b_x2 && e_x2 < b_x1 && e_y1 < b_y2 && e_y2 > b_y1) {
+                        System.out.println("HAPPENED");
+                        go.setDead(true);
+                        bullet.setDead(true);
+                    } else
+                        continue;
+                }
+            }
+        }
+    }
     @Override
     public void suspendState() {
         backgroundMusic.stop();
@@ -100,7 +144,7 @@ public class PlayState extends GameState {
 
     @Override
     public void resumeState() {
-        backgroundMusic.loop();
+        //backgroundMusic.loop();
     }
 
 

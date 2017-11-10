@@ -30,6 +30,8 @@ public class Enemy extends GameObject {
     private Random random;
 
     public Enemy() {
+        tag = "enemy";
+
         image = new Image("res/ufo_enemy.png");
         random = new Random();
 
