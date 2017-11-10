@@ -47,7 +47,7 @@ public class Bullet extends GameObject {
         switch (direction) {
             case UP: {
                 posY -= speed * dt;
-                if (posY < 0) {
+                if (posY + this.height < 0) {
                     setDead(true);
                     containedIn.getObjects().remove(this);
                 }

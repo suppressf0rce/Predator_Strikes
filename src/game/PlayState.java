@@ -1,6 +1,7 @@
 package game;
 
 import engine.*;
+import engine.gfx.Image;
 import engine.gfx.ScrollableImage;
 import engine.gfx.Transition;
 import engine.gfx.Transition.TransitionType;
@@ -8,6 +9,7 @@ import engine.sfx.SoundClip;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Random;
 
 @SuppressWarnings("WeakerAccess")
 public class PlayState extends GameState {
@@ -17,6 +19,7 @@ public class PlayState extends GameState {
     private ScrollingRandomBackground starMask;
     private ArrayList<GameObject> objects = new ArrayList<>();
     private SoundClip backgroundMusic;
+    private Image ufo;
 
     private float tmp = 0;
 
@@ -25,6 +28,7 @@ public class PlayState extends GameState {
 
         //Initialization of the background
         background = new ScrollableImage("res/bgd.png");
+        ufo = new Image("res/ufo_enemy.png");
         starMask = new ScrollingRandomBackground(background);
 
         //Initialization of the player
@@ -40,6 +44,21 @@ public class PlayState extends GameState {
 
     @Override
     public void update(float dt) {
+        // spawning enemies
+        Random rand = new Random();
+        int r = rand.nextInt(100);
+
+        // reset offset if it's out of screen boundaries
+        if (Enemy.offset > 600) {
+            Enemy.offset = 0;
+        }
+        if (r == 1) {
+            objects.add(new Enemy());
+        }
+        Enemy.offset += 100;
+
+
+
 
         //loop through objects, and if it is dead remove it from list
         for (int i = 0; i < objects.size(); i++) {
