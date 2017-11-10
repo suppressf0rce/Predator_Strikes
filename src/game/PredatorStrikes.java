@@ -20,6 +20,7 @@ public class PredatorStrikes {
         GameEngine.setDebug(true);
 
         engine.start();
+
     }
 
 }

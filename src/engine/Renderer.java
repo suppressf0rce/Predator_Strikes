@@ -362,6 +362,45 @@ public class Renderer {
     }
 
     /**
+     * This method draws a line from x, y position to x1,y2 position
+     *
+     * @param x1    an x position from which drawing line will start
+     * @param y1    an y position from which drawing line will start
+     * @param x2    an x position to which line will be drawn
+     * @param y2    an y position to which line will be drawn
+     * @param color an color of the line
+     */
+    public void drawLine(int x1, int y1, int x2, int y2, Color color) {
+        int dx = Math.abs(x2 - x1);
+        int dy = Math.abs(y2 - y1);
+
+        int sx = (x1 < x2) ? 1 : -1;
+        int sy = (y1 < y2) ? 1 : -1;
+
+        int err = dx - dy;
+
+        while (true) {
+            setPixel(x1, y1, color.getRGB());
+
+            if (x1 == x2 && y1 == y2) {
+                break;
+            }
+
+            int e2 = 2 * err;
+
+            if (e2 > -dy) {
+                err = err - dy;
+                x1 = x1 + sx;
+            }
+
+            if (e2 < dx) {
+                err = err + dx;
+                y1 = y1 + sy;
+            }
+        }
+    }
+
+    /**
      * This method draws an filled rectangle on the screen
      *
      * @param offsetX an x position where rectangle will begin its drawing

@@ -81,22 +81,9 @@ public class HighscoreState extends GameState {
 
     public void renderBackground(Renderer r) {
 
-        int sw = GameEngine.getWindow().getWidth();
-        int sh = GameEngine.getWindow().getHeight();
+
         Graphics2D g = (Graphics2D) image.getGraphics();
 
-        for (Star s : stars) {
-            float sX1 = sw / 2 + s.posX * (400.0f / s.posZ);
-            float sY1 = sh / 2 + s.posY * (400.0f / s.posZ);
-
-            float sX2 = sw / 2 + s.posX * (400.0f / (s.posZ + speed));
-            float sY2 = sh / 2 + s.posY * (400.0f / (s.posZ + speed));
-
-            int brightness = (int) (255 - (s.posZ / MAX_Z) * 255.0f);
-            g.setColor(grayscale[brightness]);
-
-            g.drawLine((int) sX1, (int) sY1, (int) sX2, (int) sY2);
-        }
 
         r.drawImage(new Image(image), 0, 0);
 
@@ -105,7 +92,21 @@ public class HighscoreState extends GameState {
     @Override
     public void render(Renderer r) {
         r.drawImage(background, 0, 0);
-        renderBackground(r);
+
+        int sw = GameEngine.getWindow().getWidth();
+        int sh = GameEngine.getWindow().getHeight();
+        for (Star s : stars) {
+            float sX1 = sw / 2 + s.posX * (400.0f / s.posZ);
+            float sY1 = sh / 2 + s.posY * (400.0f / s.posZ);
+
+            float sX2 = sw / 2 + s.posX * (400.0f / (s.posZ + speed));
+            float sY2 = sh / 2 + s.posY * (400.0f / (s.posZ + speed));
+
+            int brightness = (int) (255 - (s.posZ / MAX_Z) * 255.0f);
+
+            r.drawLine((int) sX1, (int) sY1, (int) sX2, (int) sY2, grayscale[brightness]);
+        }
+
 
         r.drawString("Pos", 20, 20, font);
         r.drawString("Name", 150, 20, font);
