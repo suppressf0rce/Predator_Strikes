@@ -48,7 +48,7 @@ public class Player extends GameObject {
         animY = 1;
     }
 
-    @SuppressWarnings("ForLoopReplaceableByForEach")
+    @SuppressWarnings({"ForLoopReplaceableByForEach", "Duplicates"})
     @Override
     public void update(float dt) {
         //Move left
@@ -115,10 +115,15 @@ public class Player extends GameObject {
         }
 
 
-        //Update its objects
+        //loop through objects, and if it is dead remove it from list
         for (int i = 0; i < objects.size(); i++) {
             objects.get(i).update(dt);
+            if (objects.get(i).isDead()) {
+                objects.remove(i);
+                i--;
+            }
         }
+
 
 
         //Crash proof animation array

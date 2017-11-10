@@ -49,7 +49,7 @@ public class Bullet extends GameObject {
                 posY -= speed * dt;
                 if (posY + this.height < 0) {
                     setDead(true);
-                    containedIn.getObjects().remove(this);
+                    //containedIn.getObjects().remove(this);
                 }
                 break;
             }
@@ -57,7 +57,7 @@ public class Bullet extends GameObject {
                 posY += speed * dt;
                 if (posY > GameEngine.getWindow().getHeight()) {
                     setDead(true);
-                    containedIn.getObjects().remove(this);
+                    //containedIn.getObjects().remove(this);
                 }
                 break;
             }

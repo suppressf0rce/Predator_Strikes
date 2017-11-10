@@ -1,12 +1,10 @@
 package game;
 
-import engine.GameEngine;
 import engine.GameObject;
 import engine.GameState;
 import engine.Renderer;
 import engine.gfx.Image;
 
-import java.awt.event.KeyEvent;
 import java.util.Random;
 
 @SuppressWarnings({"WeakerAccess", "ForLoopReplaceableByForEach"})
@@ -38,9 +36,13 @@ public class Enemy extends GameObject {
         // starting position
         this.posX = random.nextInt(50) + offset;
         this.posY = -200;
+
+        this.width = image.getWidth();
+        this.height = image.getHeight();
     }
 
 
+    @SuppressWarnings("Duplicates")
     @Override
     public void update(float dt) {
         // increasing the vertical positon
@@ -52,7 +54,7 @@ public class Enemy extends GameObject {
             int fireChance = random.nextInt(100);
             if (fireChance < 20) {
                 Bullet bullet = new Bullet(Direction.DOWN, this);
-                bullet.setPosX(posX + width / 2 + bullet.getWidth());
+                bullet.setPosX(posX + width / 2 - bullet.getWidth() / 2);
                 bullet.setPosY(posY + height + 15);
                 objects.add(bullet);
 
@@ -60,11 +62,16 @@ public class Enemy extends GameObject {
             fireTime = 0;
         }
 
-        //Update its objects
+        //loop through objects, and if it is dead remove it from list
         for (int i = 0; i < objects.size(); i++) {
             objects.get(i).update(dt);
+            if (objects.get(i).isDead()) {
+                objects.remove(i);
+                i--;
+            }
         }
     }
+
 
     @Override
     public void render(Renderer r) {

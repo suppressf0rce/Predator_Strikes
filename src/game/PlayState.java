@@ -42,6 +42,7 @@ public class PlayState extends GameState {
 
     //===>>Methods<<===//
 
+    @SuppressWarnings("Duplicates")
     @Override
     public void update(float dt) {
         checkForCollisions();
@@ -58,8 +59,6 @@ public class PlayState extends GameState {
             objects.add(new Enemy());
         }
         Enemy.offset += 100;
-
-
 
 
         //loop through objects, and if it is dead remove it from list
@@ -95,6 +94,7 @@ public class PlayState extends GameState {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     public void checkForCollisions() {
         GameObject player = null;
         // looking for the player object
@@ -107,32 +107,90 @@ public class PlayState extends GameState {
 
         float b_x1, b_x2, b_y1, b_y2;
         float e_x1, e_x2, e_y1, e_y2;
-        // checking for bullet collision
-        for (GameObject go : objects) {
+        float p_x1, p_x2, p_y1, p_y2;
+        for (int i = 0; i < objects.size(); i++) {
+            GameObject go = objects.get(i);
+
+            //Checking for player bullet collision
             if (go.getTag().equals("enemy")) {
 
-                for (GameObject bullet : player.getObjects()) {
+                if (player != null) {
+                    for (GameObject bullet : player.getObjects()) {
 
 
-                    b_x1 = bullet.getPosX();
-                    b_x2 = b_x1 + bullet.getWidth();
+                        b_x1 = bullet.getPosX();
+                        b_x2 = b_x1 + bullet.getWidth();
 
-                    b_y1 = bullet.getPosY();
-                    b_y2 = b_y1 + bullet.getHeight();
+                        b_y1 = bullet.getPosY();
 
-                    e_x1 = go.getPosX();
-                    e_x2 = e_x1 + go.getWidth();
+                        e_x1 = go.getPosX();
+                        e_x2 = e_x1 + go.getWidth();
 
-                    e_y1 = go.getPosY();
-                    e_y2 = e_y1 + go.getHeight();
+                        e_y1 = go.getPosY();
+                        e_y2 = e_y1 + go.getHeight();
 
 
-                    if (e_x1 > b_x2 && e_x2 < b_x1 && e_y1 < b_y2 && e_y2 > b_y1) {
-                        System.out.println("HAPPENED");
-                        go.setDead(true);
-                        bullet.setDead(true);
-                    } else
-                        continue;
+                        if (e_y2 > b_y1 && e_y1 < b_y1 && e_x1 < b_x2 && e_x2 > b_x1) {
+                            objects.addAll(go.getObjects());
+                            go.setDead(true);
+                            bullet.setDead(true);
+                        }
+                    }
+                }
+            }
+
+
+            //Checking for enemy bullet collision
+            if (go.getTag().equals("player")) {
+
+                for (int j = 0; j < objects.size(); j++) {
+                    GameObject enemy = objects.get(j);
+                    if (enemy.getTag().equals("enemy")) {
+
+                        e_x1 = enemy.getPosX();
+                        e_x2 = e_x1 + enemy.getWidth();
+
+                        e_y1 = enemy.getPosY();
+                        e_y2 = e_y1 + enemy.getHeight();
+
+                        p_x1 = go.getPosX();
+                        p_x2 = p_x1 + go.getWidth();
+
+                        p_y1 = go.getPosY();
+
+
+                        //Collision of enemy bullet with player
+                        for (GameObject bullet : enemy.getObjects()) {
+
+                            b_x1 = bullet.getPosX();
+                            b_x2 = b_x1 + bullet.getWidth();
+
+                            b_y1 = bullet.getPosY();
+                            b_y2 = b_y1 + bullet.getHeight();
+
+                            if (b_y2 > p_y1 && b_y1 < p_y1 && b_x1 < p_x2 && b_x2 > p_x1) {
+                                objects.addAll(go.getObjects());
+                                go.setDead(true);
+                                objects.addAll(bullet.getObjects());
+                                bullet.setDead(true);
+
+                                //TODO: player died or lost life
+                            }
+                        }
+
+                        //Collision of enemy with player
+                        if (e_y2 > p_y1 && e_y1 < p_y1 && e_x1 < p_x2 && e_x2 > p_x1) {
+                            objects.addAll(go.getObjects());
+                            go.setDead(true);
+                            objects.addAll(enemy.getObjects());
+                            enemy.setDead(true);
+
+                            //TODO: player died or lost life
+                        }
+
+                    }
+
+
                 }
             }
         }
