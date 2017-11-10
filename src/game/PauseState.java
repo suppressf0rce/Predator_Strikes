@@ -26,7 +26,7 @@ public class PauseState extends GameState {
     private int planetY = 250;
     private float planetTile = 0;
     private int planetTile1 = 0;
-    private int planetAnimationSpeed = 15;
+    private int planetAnimationSpeed = 10;
 
     private String selectedItem = null;
 
@@ -104,7 +104,6 @@ public class PauseState extends GameState {
     public void render(Renderer r) {
 
         activeFont = font;
-
         r.drawImage(bg, 0, 0);
 
         if (selectedItem.equals("play")) {
@@ -130,6 +129,7 @@ public class PauseState extends GameState {
         r.drawString("Quit", GameEngine.getWindow().getWidth() / 2 - 60, 400, activeFont);
 
         r.drawImageTile(planet, planetX, planetY, (int) planetTile, planetTile1);
+
     }
 
     @Override
