@@ -16,7 +16,7 @@ public class Player extends GameObject {
     private int numberOfTileX;
     private int numberOfTileY;
 
-    private float speed = 300;
+    private float speed = 400;
     private float fireSpeed = 6;
 
     private GameState state;
