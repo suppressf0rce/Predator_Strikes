@@ -14,7 +14,7 @@ public class PlayState extends GameState {
 
     //===>>Variables<<===//
     private ScrollableImage background;
-    private ScrollingRandomBackground stars;
+    private ScrollingRandomBackground starMask;
     private ArrayList<GameObject> objects = new ArrayList<>();
     private SoundClip backgroundMusic;
 
@@ -25,7 +25,7 @@ public class PlayState extends GameState {
 
         //Initialization of the background
         background = new ScrollableImage("res/bgd.png");
-        stars = new ScrollingRandomBackground(background);
+        starMask = new ScrollingRandomBackground(background);
 
         //Initialization of the player
         Player player = new Player(this);
@@ -55,7 +55,7 @@ public class PlayState extends GameState {
             tmp = 0;
             background.scroll();
         }
-        stars.scroll();
+        starMask.scroll();
 
         if (GameEngine.getInput().isKeyDown(KeyEvent.VK_ESCAPE)) {
             TransitionType transType = TransitionType.values()[(int) (Math.random() * TransitionType.values().length)];
@@ -66,9 +66,9 @@ public class PlayState extends GameState {
 
     @Override
     public void render(Renderer r) {
-        stars.scroll();
         r.drawImage(background, 0, 0);
-        r.drawParticles(stars, stars.getParticle_grid());
+        // drawing the space particles from the star mask
+        r.drawParticles(starMask, starMask.getParticle_grid());
         for (GameObject obj : objects) {
             obj.render(r);
         }
