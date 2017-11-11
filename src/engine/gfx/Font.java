@@ -5,7 +5,7 @@ public class Font {
 
     //===>>Variables<<===//
     public static final Font STANDARD = new Font("res/inconsolata_14pt.png", 1000, 6);
-
+    public static final Font STANDARD_WHITE = new Font("res/inconsolata_14pt_white.png", 1000, 6);
     private Image fontImage;
     private int[] offsets;
     private int[] widths;
