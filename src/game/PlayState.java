@@ -107,7 +107,8 @@ public class PlayState extends GameState {
 
         float b_x1, b_x2, b_y1, b_y2;
         float e_x1, e_x2, e_y1, e_y2;
-        float p_x1, p_x2, p_y1, p_y2;
+        float p_x1, p_x2, p_y1;
+        float eb_x1, eb_x2, eb_y1, eb_y2;
         for (int i = 0; i < objects.size(); i++) {
             GameObject go = objects.get(i);
 
@@ -130,10 +131,31 @@ public class PlayState extends GameState {
                         e_y2 = e_y1 + go.getHeight();
 
 
+                        //Player bullet collided with the enemy
                         if (e_y2 > b_y1 && e_y1 < b_y1 && e_x1 < b_x2 && e_x2 > b_x1) {
                             objects.addAll(go.getObjects());
                             go.setDead(true);
                             bullet.setDead(true);
+
+                            //TODO: Enemy died or lost life
+                        }
+
+                        for (GameObject e_bullet : go.getObjects()) {
+
+                            eb_x1 = e_bullet.getPosX();
+                            eb_x2 = eb_x1 + e_bullet.getWidth();
+
+                            eb_y1 = e_bullet.getPosY();
+                            eb_y2 = eb_y1 + e_bullet.getHeight();
+
+
+                            //Player bullet collided with the enemy bullet
+                            if (eb_y2 > b_y1 && eb_y1 < b_y1 && eb_x1 < b_x2 && eb_x2 > b_x1) {
+                                e_bullet.setDead(true);
+                                bullet.setDead(true);
+                                //TODO: Bullets collided do something
+                            }
+
                         }
                     }
                 }
@@ -202,7 +224,7 @@ public class PlayState extends GameState {
 
     @Override
     public void resumeState() {
-        //backgroundMusic.loop();
+        backgroundMusic.loop();
     }
 
 
