@@ -13,9 +13,12 @@ public class Explosion extends GameObject {
     private int starting_posX;
     private int starting_posY;
 
+    private Color color;
 
-    protected Explosion(int posX, int posY) {
+    protected Explosion(int posX, int posY, Color color) {
         this.setTag("explosion");
+
+        this.color = color;
 
         this.starting_posX = posX;
         this.starting_posY = posY;
@@ -61,7 +64,7 @@ public class Explosion extends GameObject {
             if (p.life <= 0)
                 continue;
 
-            GameEngine.getRenderer().drawLine((int) (p.posX - p.dX), (int) (p.posY - p.dY), (int) p.posX, (int) p.posY, Color.green);
+            GameEngine.getRenderer().drawLine((int) (p.posX - p.dX), (int) (p.posY - p.dY), (int) p.posX, (int) p.posY, this.color);
         }
     }
 

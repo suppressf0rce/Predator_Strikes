@@ -8,6 +8,7 @@ import engine.gfx.Transition;
 import engine.gfx.Transition.TransitionType;
 import engine.sfx.SoundClip;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
@@ -139,7 +140,7 @@ public class PlayState extends GameState {
                         if (e_y2 > b_y1 && e_y1 < b_y1 && e_x1 < b_x2 && e_x2 > b_x1) {
                             objects.addAll(go.getObjects());
                             playerScore += 10;
-                            objects.add(new Explosion((int) (go.getPosX() + go.getWidth() / 2), (int) (go.getPosY() + go.getHeight() / 2)));
+                            objects.add(new Explosion((int) (go.getPosX() + go.getWidth() / 2), (int) (go.getPosY() + go.getHeight() / 2), Color.green));
                             go.setDead(true);
                             bullet.setDead(true);
 
@@ -202,6 +203,7 @@ public class PlayState extends GameState {
                                 objects.addAll(bullet.getObjects());
                                 bullet.setDead(true);
 
+                                objects.add(new Explosion((int) (go.getPosX() + go.getWidth() / 2), (int) (go.getPosY() + go.getHeight() / 2), Color.white));
                                 //TODO: player died or lost life
                             }
                         }
@@ -214,6 +216,7 @@ public class PlayState extends GameState {
                             enemy.setDead(true);
 
                             //TODO: player died or lost life
+                            objects.add(new Explosion((int) (go.getPosX() + go.getWidth() / 2), (int) (go.getPosY() + go.getHeight() / 2), Color.white));
                         }
 
                     }
