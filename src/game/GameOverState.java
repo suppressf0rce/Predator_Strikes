@@ -10,8 +10,6 @@ import engine.gfx.Transition;
 import engine.sfx.SoundClip;
 
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.security.Key;
 
 public class GameOverState extends GameState {
     private Image background;
@@ -59,7 +57,6 @@ public class GameOverState extends GameState {
     public void render(Renderer r) {
         activeFont = font;
         if (background != null) {
-            effectGrayScale();
             r.drawImage(background, 0, 0);
         }
 
@@ -81,7 +78,7 @@ public class GameOverState extends GameState {
 
                 int i = (red + green + blue) / 3;
                 i = (255 << 24 | i << 16 | i << 8 | i);
-                System.out.println(red + " " + green + " " + blue);
+                //System.out.println(red + " " + green + " " + blue);
                 background.setPixel(x + y * background.getWidth(), i);
 
 
@@ -95,8 +92,8 @@ public class GameOverState extends GameState {
 
     @Override
     public void resumeState() {
-        this.background = new Image(GameEngine.getHost().renderSnapshot(null, this));
         backgroundMusic.play();
+        effectGrayScale();
     }
 
     public void setBackground(Image background) {

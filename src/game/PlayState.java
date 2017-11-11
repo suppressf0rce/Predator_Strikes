@@ -205,8 +205,9 @@ public class PlayState extends GameState {
                                 objects.add(new Explosion((int) (go.getPosX() + go.getWidth() / 2), (int) (go.getPosY() + go.getHeight() / 2), Color.white));
                                 //GameEngine.getHost().setState("gameover");
 
+                                GameOverState gameOver = (GameOverState) GameEngine.getHost().getState("gameover");
+                                gameOver.setBackground(new Image(GameEngine.getHost().renderSnapshot(null, this)));
                                 Transition.transitionTo("gameover", TransitionType.None, 0f);
-
                             }
                         }
 
@@ -220,6 +221,8 @@ public class PlayState extends GameState {
 
                             objects.add(new Explosion((int) (go.getPosX() + go.getWidth() / 2), (int) (go.getPosY() + go.getHeight() / 2), Color.white));
 
+                            GameOverState gameOver = (GameOverState) GameEngine.getHost().getState("gameover");
+                            gameOver.setBackground(new Image(GameEngine.getHost().renderSnapshot(null, this)));
                             Transition.transitionTo("gameover", TransitionType.None, 0f);
 
 
