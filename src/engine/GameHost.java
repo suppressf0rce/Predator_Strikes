@@ -177,4 +177,8 @@ public class GameHost {
     public void setClearBackBuffer(boolean clearBackBuffer) {
         this.clearBackBuffer = clearBackBuffer;
     }
+
+    public GameState getNextState() {
+        return nextState;
+    }
 }

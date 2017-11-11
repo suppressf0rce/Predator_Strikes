@@ -10,6 +10,7 @@ import engine.sfx.SoundClip;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -204,7 +205,9 @@ public class PlayState extends GameState {
                                 bullet.setDead(true);
 
                                 objects.add(new Explosion((int) (go.getPosX() + go.getWidth() / 2), (int) (go.getPosY() + go.getHeight() / 2), Color.white));
-                                //TODO: player died or lost life
+                                GameEngine.getHost().setState("gameover");
+
+
                             }
                         }
 
@@ -215,8 +218,11 @@ public class PlayState extends GameState {
                             objects.addAll(enemy.getObjects());
                             enemy.setDead(true);
 
-                            //TODO: player died or lost life
+
                             objects.add(new Explosion((int) (go.getPosX() + go.getWidth() / 2), (int) (go.getPosY() + go.getHeight() / 2), Color.white));
+                            GameEngine.getHost().setState("gameover");
+
+
                         }
 
                     }
