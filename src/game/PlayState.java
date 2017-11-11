@@ -1,6 +1,7 @@
 package game;
 
 import engine.*;
+import engine.gfx.Font;
 import engine.gfx.Image;
 import engine.gfx.ScrollableImage;
 import engine.gfx.Transition;
@@ -22,6 +23,8 @@ public class PlayState extends GameState {
     private Image ufo;
 
     private float tmp = 0;
+
+    public static int playerScore = 0;
 
     public PlayState(GameHost host) {
         super("play", host);
@@ -92,6 +95,7 @@ public class PlayState extends GameState {
         for (GameObject obj : objects) {
             obj.render(r);
         }
+        r.drawString("SCORE: " + playerScore, 930, 0, null);
     }
 
     @SuppressWarnings("Duplicates")
@@ -134,6 +138,8 @@ public class PlayState extends GameState {
                         //Player bullet collided with the enemy
                         if (e_y2 > b_y1 && e_y1 < b_y1 && e_x1 < b_x2 && e_x2 > b_x1) {
                             objects.addAll(go.getObjects());
+                            playerScore += 10;
+                            objects.add(new Explosion((int) (go.getPosX() + go.getWidth() / 2), (int) (go.getPosY() + go.getHeight() / 2)));
                             go.setDead(true);
                             bullet.setDead(true);
 
