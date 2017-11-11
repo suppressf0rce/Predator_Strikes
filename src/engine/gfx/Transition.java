@@ -162,6 +162,9 @@ public class Transition extends GameState {
                         (int) ((1.0f - position) * GameEngine.getWindow().getHeight()),
                         null);
                 break;
+
+            case None:
+                break;
         }
 
     }
@@ -196,7 +199,8 @@ public class Transition extends GameState {
         ZoomIn,
         ZoomOut,
         SwipeLeft,
-        SwipeRight
+        SwipeRight,
+        None
     }
 
 }
