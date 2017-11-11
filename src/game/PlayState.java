@@ -26,6 +26,9 @@ public class PlayState extends GameState {
 
     public static int playerScore = 0;
 
+    Player player;
+    private float deathConter;
+
     public PlayState(GameHost host) {
         super("play", host);
 
@@ -35,7 +38,7 @@ public class PlayState extends GameState {
         starMask = new ScrollingRandomBackground(background);
 
         //Initialization of the player
-        Player player = new Player(this);
+        player = new Player(this);
         objects.add(player);
 
         backgroundMusic = new SoundClip("res/Inverse Phase - Propane NESmares (8-bit remix).wav");
@@ -84,6 +87,16 @@ public class PlayState extends GameState {
             TransitionType transType = TransitionType.values()[(int) (Math.random() * TransitionType.values().length)];
 
             Transition.transitionTo("pause", transType, 0.5f);
+        }
+
+        if (player.isDead()) {
+            deathConter += dt;
+        }
+
+        if (deathConter > 1) {
+            GameOverState go = (GameOverState) GameEngine.getHost().getState("gameover");
+            go.setBackground(new Image(GameEngine.getHost().renderSnapshot(null, this)));
+            Transition.transitionTo("gameover", TransitionType.Crossfade, .3f);
         }
     }
 
@@ -205,9 +218,6 @@ public class PlayState extends GameState {
                                 objects.add(new Explosion((int) (go.getPosX() + go.getWidth() / 2), (int) (go.getPosY() + go.getHeight() / 2), Color.white));
                                 //GameEngine.getHost().setState("gameover");
 
-                                GameOverState gameOver = (GameOverState) GameEngine.getHost().getState("gameover");
-                                gameOver.setBackground(new Image(GameEngine.getHost().renderSnapshot(null, this)));
-                                Transition.transitionTo("gameover", TransitionType.None, 0f);
                             }
                         }
 
@@ -220,11 +230,6 @@ public class PlayState extends GameState {
 
 
                             objects.add(new Explosion((int) (go.getPosX() + go.getWidth() / 2), (int) (go.getPosY() + go.getHeight() / 2), Color.white));
-
-                            GameOverState gameOver = (GameOverState) GameEngine.getHost().getState("gameover");
-                            gameOver.setBackground(new Image(GameEngine.getHost().renderSnapshot(null, this)));
-                            Transition.transitionTo("gameover", TransitionType.None, 0f);
-
 
                         }
 
