@@ -58,14 +58,36 @@ public class GameOverState extends GameState {
     @Override
     public void render(Renderer r) {
         activeFont = font;
-
         if (background != null) {
+            effectGrayScale();
             r.drawImage(background, 0, 0);
         }
 
         r.drawString("Play again", GameEngine.getWindow().getWidth() / 2 - 180, GameEngine.getWindow().getHeight() / 2 - 50, activeFont);
     }
 
+    private void effectGrayScale() {
+        if (background == null)
+            return;
+
+        for (int y = 0; y < background.getHeight(); y++) {
+            for (int x = 0; x < background.getWidth(); x++) {
+                int pixel = background.getPixels()[x + y * background.getWidth()];
+
+                int red = ((pixel >> 16) & 0xff);
+                int green = ((pixel >> 8) & 0xff);
+                int blue = (pixel & 0xff);
+
+
+                int i = (red + green + blue) / 3;
+                i = (255 << 24 | i << 16 | i << 8 | i);
+                System.out.println(red + " " + green + " " + blue);
+                background.setPixel(x + y * background.getWidth(), i);
+
+
+            }
+        }
+    }
     @Override
     public void suspendState() {
 
