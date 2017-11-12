@@ -73,6 +73,11 @@ public class PlayState extends GameState {
             if (objects.get(i).isDead()) {
                 objects.remove(i);
                 i--;
+                continue;
+            }
+
+            if (objects.get(i) instanceof Player) {
+                player = (Player) objects.get(i);
             }
         }
 
@@ -89,14 +94,18 @@ public class PlayState extends GameState {
             Transition.transitionTo("pause", transType, 0.5f);
         }
 
-        if (player.isDead()) {
-            deathConter += dt;
-        }
+        if (player != null) {
+            if (player.isDead()) {
+                deathConter += dt;
+            }
 
-        if (deathConter > 1) {
-            GameOverState go = (GameOverState) GameEngine.getHost().getState("gameover");
-            go.setBackground(new Image(GameEngine.getHost().renderSnapshot(null, this)));
-            Transition.transitionTo("gameover", TransitionType.Crossfade, .3f);
+            if (deathConter > 1) {
+                GameOverState go = (GameOverState) GameEngine.getHost().getState("gameover");
+                go.setBackground(new Image(GameEngine.getHost().renderSnapshot(null, this)));
+                Transition.transitionTo("gameover", TransitionType.Crossfade, .3f);
+                player = null;
+                deathConter = 0;
+            }
         }
     }
 
