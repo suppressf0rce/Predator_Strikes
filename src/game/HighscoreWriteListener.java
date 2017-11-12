@@ -12,10 +12,12 @@ public class HighscoreWriteListener implements WindowListener {
     @Override
     public void windowClosing(WindowEvent e) {
         Utils.writeHighscoreEntries();
+        System.out.println("SS");
     }
 
     @Override
     public void windowClosed(WindowEvent e) {
+        Utils.writeHighscoreEntries();
 
     }
 

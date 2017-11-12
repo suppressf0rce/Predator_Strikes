@@ -37,10 +37,19 @@ public class GameOverState extends GameState {
 
     @Override
     public void update(float dt) {
-
         if (GameEngine.getInput().isKeyDown(KeyEvent.VK_ENTER)) {
             selectedItem = "play";
 
+            if (PlayState.playerScore > Utils.highscore_entries.get(Utils.highscore_entries.size() - 1).playerScore) {
+                int dialogButton = JOptionPane.showConfirmDialog(null, "Congratulations! You've made it to the Highscore list! Would you like to save your score?", "Warning", JOptionPane.YES_NO_OPTION);
+
+                if (dialogButton == JOptionPane.YES_OPTION) {
+                    playerName = JOptionPane.showInputDialog("Please enter your name: ");
+
+                    Utils.highscore_entries.add(new HighscoreEntry(playerName, PlayState.playerScore));
+                    Utils.sortHighScoreEntries();
+                }
+            }
 
 
             if (selectedItem.equals("play")) {
@@ -98,16 +107,6 @@ public class GameOverState extends GameState {
         backgroundMusic.play();
         effectGrayScale();
 
-        if (PlayState.playerScore > Utils.highscore_entries.get(Utils.highscore_entries.size() - 1).playerScore) {
-            int dialogButton = JOptionPane.showConfirmDialog(null, "Congratulations! You've made it to the Highscore list! Would you like to save your score?", "Warning", JOptionPane.YES_NO_OPTION);
-
-            if (dialogButton == JOptionPane.YES_OPTION) {
-                playerName = JOptionPane.showInputDialog("Please enter your name: ");
-
-                Utils.highscore_entries.add(new HighscoreEntry(playerName, PlayState.playerScore));
-                Utils.sortHighScoreEntries();
-            }
-        }
     }
 
     public void setBackground(Image background) {

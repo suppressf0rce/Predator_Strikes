@@ -107,9 +107,9 @@ public class HighscoreState extends GameState {
 
         for (int i = 0; i < 10; i++) {
 
-            r.drawString("" + (i + 1) + ".", 40, 50 + i * 55, font);
-            r.drawString(Utils.highscore_entries.get(i).playerName, 150, 50 + i * 55, font);
-            r.drawString(String.valueOf(Utils.highscore_entries.get(i).playerScore), 750, 50 + i * 55, font);
+            r.drawString("" + (i + 1) + ".", 40, 50 + (i + 1) * 55, font);
+            r.drawString(Utils.highscore_entries.get(i).playerName, 150, 50 + (i + 1) * 55, font);
+            r.drawString(String.valueOf(Utils.highscore_entries.get(i).playerScore), 750, 50 + (i + 1) * 55, font);
         }
     }
 
