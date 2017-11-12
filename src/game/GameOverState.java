@@ -77,8 +77,8 @@ public class GameOverState extends GameState {
 
 
                 int i = (red + green + blue) / 3;
+
                 i = (255 << 24 | i << 16 | i << 8 | i);
-                //System.out.println(red + " " + green + " " + blue);
                 background.setPixel(x + y * background.getWidth(), i);
 
 

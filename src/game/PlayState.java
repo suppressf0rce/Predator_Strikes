@@ -1,6 +1,7 @@
 package game;
 
 import engine.*;
+import engine.gfx.Font;
 import engine.gfx.Image;
 import engine.gfx.ScrollableImage;
 import engine.gfx.Transition;
@@ -25,9 +26,10 @@ public class PlayState extends GameState {
     private float tmp = 0;
 
     public static int playerScore = 0;
+    public static int highestScore = 0;
 
     Player player;
-    private float deathConter;
+    private float deathCounter;
 
     public PlayState(GameHost host) {
         super("play", host);
@@ -96,15 +98,20 @@ public class PlayState extends GameState {
 
         if (player != null) {
             if (player.isDead()) {
-                deathConter += dt;
+                deathCounter += dt;
             }
 
-            if (deathConter > 1) {
+            if (deathCounter > 1) {
                 GameOverState go = (GameOverState) GameEngine.getHost().getState("gameover");
                 go.setBackground(new Image(GameEngine.getHost().renderSnapshot(null, this)));
                 Transition.transitionTo("gameover", TransitionType.Crossfade, .3f);
-                player = null;
-                deathConter = 0;
+                if (deathCounter > 1) {
+                    GameOverState go = (GameOverState) GameEngine.getHost().getState("gameover");
+                    go.setBackground(new Image(GameEngine.getHost().renderSnapshot(null, this)));
+                    Transition.transitionTo("gameover", TransitionType.Crossfade, .3f);
+                    player = null;
+                    deathCounter = 0;
+                }
             }
         }
     }
@@ -117,7 +124,7 @@ public class PlayState extends GameState {
         for (GameObject obj : objects) {
             obj.render(r);
         }
-        r.drawString("SCORE: " + playerScore, 930, 0, null);
+        r.drawString("SCORE: " + playerScore, 1, 0, Font.STANDARD_WHITE);
     }
 
     @SuppressWarnings("Duplicates")
