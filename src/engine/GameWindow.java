@@ -1,5 +1,7 @@
 package engine;
 
+import game.HighscoreWriteListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -42,6 +44,7 @@ public class GameWindow {
         //Frame Setup
         frame = new JFrame(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.addWindowListener(new HighscoreWriteListener());
         frame.setLayout(new BorderLayout());
         frame.add(canvas, BorderLayout.CENTER);
         frame.pack();

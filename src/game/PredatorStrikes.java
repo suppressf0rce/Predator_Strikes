@@ -7,6 +7,7 @@ import engine.gfx.Transition;
 public class PredatorStrikes {
 
     public static void main(String[] args) {
+        Utils.readHighScoreEntries();
 
         GameHost host = new GameHost();
         GameEngine engine = new GameEngine(host);

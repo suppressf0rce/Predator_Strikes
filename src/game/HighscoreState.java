@@ -29,6 +29,7 @@ public class HighscoreState extends GameState {
     private Font font;
     private String lines[] = new String[10];
 
+
     public HighscoreState(GameHost host) {
         super("highscore", host);
         font = new Font("res/russo_one_36pt.png", 300, 2);
