@@ -19,7 +19,7 @@ public class PredatorStrikes {
         new GameOverState(host);
 
         host.setState("pause");
-        GameEngine.setDebug(true);
+        GameEngine.setDebug(false);
 
         engine.start();
 
