@@ -27,7 +27,7 @@ public class HighscoreState extends GameState {
     private Color[] grayscale = new Color[256];
     private float speed = 10.0f;
     private Font font;
-    private String lines[] = new String[10];
+
 
 
     public HighscoreState(GameHost host) {
@@ -44,15 +44,7 @@ public class HighscoreState extends GameState {
         for (int i = 0; i < 256; ++i)
             grayscale[i] = new Color(i, i, i);
 
-        File f = new File("res/highscores.txt");
-        try {
-            Scanner scanner = new Scanner(new FileInputStream(f));
-            for (int i = 0; i < 10; i++) {
-                lines[i] = scanner.nextLine();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+
 
         background = new Image("res/black.jpg");
         image = new BufferedImage(GameEngine.getWindow().getWidth(), GameEngine.getWindow().getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -113,14 +105,11 @@ public class HighscoreState extends GameState {
         r.drawString("Name", 150, 20, font);
         r.drawString("Score", 750, 20, font);
 
-        for (int i = 1; i < 11; i++) {
-            String parts[] = lines[i - 1].split("->");
-            String name = parts[0];
-            String score = parts[1];
+        for (int i = 0; i < 10; i++) {
 
-            r.drawString("" + i + ".", 40, 50 + i * 55, font);
-            r.drawString(name, 150, 50 + i * 55, font);
-            r.drawString(score, 750, 50 + i * 55, font);
+            r.drawString("" + (i + 1) + ".", 40, 50 + i * 55, font);
+            r.drawString(Utils.highscore_entries.get(i).playerName, 150, 50 + i * 55, font);
+            r.drawString(String.valueOf(Utils.highscore_entries.get(i).playerScore), 750, 50 + i * 55, font);
         }
     }
 
@@ -130,15 +119,8 @@ public class HighscoreState extends GameState {
 
     @Override
     public void resumeState() {
-        File f = new File("res/highscores.txt");
-        try {
-            Scanner scanner = new Scanner(new FileInputStream(f));
-            for (int i = 0; i < 10; i++) {
-                lines[i] = scanner.nextLine();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+
+
     }
 
 
