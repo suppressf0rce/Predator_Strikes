@@ -105,13 +105,8 @@ public class PlayState extends GameState {
                 GameOverState go = (GameOverState) GameEngine.getHost().getState("gameover");
                 go.setBackground(new Image(GameEngine.getHost().renderSnapshot(null, this)));
                 Transition.transitionTo("gameover", TransitionType.Crossfade, .3f);
-                if (deathCounter > 1) {
-                    GameOverState go = (GameOverState) GameEngine.getHost().getState("gameover");
-                    go.setBackground(new Image(GameEngine.getHost().renderSnapshot(null, this)));
-                    Transition.transitionTo("gameover", TransitionType.Crossfade, .3f);
-                    player = null;
-                    deathCounter = 0;
-                }
+                player = null;
+                deathCounter = 0;
             }
         }
     }
@@ -256,6 +251,7 @@ public class PlayState extends GameState {
             }
         }
     }
+
     @Override
     public void suspendState() {
         backgroundMusic.stop();
