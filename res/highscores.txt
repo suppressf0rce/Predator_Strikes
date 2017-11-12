@@ -1,10 +1,10 @@
+tester -> 50
+dd -> 10
+ee -> 10
 Dejan Radmanovic -> 0
 Stefan Cvetic -> 0
 Aleksandar Stancic -> 0
 Raf Graf -> 0
-No name -> 0
-No name -> 0
-No name -> 0
-No name -> 0
-No name -> 0
-No name -> 0
+No Name -> 0
+No Name -> 0
+No Name -> 0
